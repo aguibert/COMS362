@@ -6,13 +6,13 @@ import system.Route;
 
 public interface InvoiceController {
     boolean createInvoice(String companyName, String customerName, String customerAddress, String customerPhone,
-                          List<Package> packages, String invoiceDescription);
+                          int numPackages, String invoiceDescription);
 
     boolean updateRoute(Route r, Invoice inv);
 
     boolean createPackageRoute(String start, String[] destinations, Package pkg);
 
-    boolean cancelOrder(int invoiceID);
+    boolean cancelInvoice(int invoiceID);
 
     List<Invoice> getCustomerInvoices(String customerName);
 
