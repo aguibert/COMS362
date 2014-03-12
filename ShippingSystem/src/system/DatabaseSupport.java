@@ -14,13 +14,13 @@ import system.warehouse.Warehouse;
 public interface DatabaseSupport {
     public boolean putTruck(Truck t);
 
-    public boolean getTruck(int truckID);
+    public Truck getTruck(int truckID);
 
     public boolean putInvoice(Invoice i);
 
-    public boolean getInvoice(int invoiceID);
+    public Invoice getInvoice(int invoiceID);
 
     public boolean putWareHouse(Warehouse w);
 
-    public boolean getWareHouse(int warehouseID);
+    public Warehouse getWareHouse(int warehouseID);
 }
