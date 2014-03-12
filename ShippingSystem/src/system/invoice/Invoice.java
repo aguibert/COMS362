@@ -18,7 +18,9 @@ public interface Invoice {
 
     public Package getPackage(int packageID);
 
-    public boolean changeStatus(INVOICE_STATE newState);
+    public boolean setStatus(INVOICE_STATE newState);
 
-    boolean addPackageToInvoice(int packageID);
+    public INVOICE_STATE getStatus();
+
+    public boolean addPackage(Package p);
 }

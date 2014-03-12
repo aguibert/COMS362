@@ -19,13 +19,17 @@ public interface Truck {
 
     public String getLocation();
 
+    public boolean setLocation(String location);
+
     public Route createTruckRoute();
 
     public Route refreshTruckRoute();
 
-    public boolean addPackageToTruck(int packageID);
+    public boolean addPackage(int packageID);
+
+    public boolean removePackage(int packageID);
 
     public TRUCK_STATE getState();
 
-    public boolean setTruckState(TRUCK_STATE newState);
+    public boolean setState(TRUCK_STATE newState);
 }
