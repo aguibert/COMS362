@@ -1,5 +1,6 @@
 package system.warehouse;
 
 public interface WarehouseManager {
-    public boolean packageArrival();
+
+    public Package packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost);
 }

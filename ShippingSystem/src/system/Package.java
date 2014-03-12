@@ -3,10 +3,8 @@
  */
 package system;
 
-/**
- * @author Andrew
- * 
- */
+import system.invoice.Invoice;
+
 public interface Package {
 
     public enum PACKAGE_STATE {
@@ -17,4 +15,7 @@ public interface Package {
         CANCELLED
     }
 
+    public int getPackageID();
+
+    public Invoice getInvoice();
 }

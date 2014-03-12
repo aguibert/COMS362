@@ -14,5 +14,9 @@ public interface InvoiceController {
 
     boolean cancelOrder(int invoiceID);
 
-    List<Invoice> getCustomerInvoices(int[] invoiceIDs);
+    List<Invoice> getCustomerInvoices(String customerName);
+
+    boolean addPackageToInvoice(int invoiceID, int packageID);
+
+    Invoice getInvoice(int invoiceID);
 }
