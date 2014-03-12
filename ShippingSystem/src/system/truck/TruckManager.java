@@ -2,15 +2,9 @@ package system.truck;
 
 import java.util.List;
 
-public interface TruckManager {
+import system.truck.Truck.TRUCK_STATE;
 
-    public enum TRUCK_STATE {
-        ALL_STATES,
-        AVAILABLE,
-        IN_ROUTE,
-        BROKEN,
-        LOADING
-    }
+public interface TruckManager {
 
     public Route createRoute(Package[] packages);
 
