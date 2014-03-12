@@ -2,7 +2,7 @@ package system.invoice;
 
 import java.util.List;
 
-import system.Route;
+import system.truck.Route;
 
 public interface InvoiceManager {
 

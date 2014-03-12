@@ -2,7 +2,6 @@ package system.truck;
 
 import java.util.List;
 
-import system.Route;
 
 public interface TruckManager {
 
