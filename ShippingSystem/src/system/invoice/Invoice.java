@@ -16,7 +16,7 @@ public interface Invoice {
         CANCELLED
     }
 
-    public Package getPackage(int packageID);
+    public Package getPackage(String packageID);
 
     public boolean setStatus(INVOICE_STATE newState);
 

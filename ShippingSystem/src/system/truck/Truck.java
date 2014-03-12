@@ -3,6 +3,8 @@
  */
 package system.truck;
 
+import java.util.List;
+
 /**
  * @author Andrew
  * 
@@ -25,9 +27,11 @@ public interface Truck {
 
     public Route refreshTruckRoute();
 
-    public boolean addPackage(int packageID);
+    public boolean addPackage(String packageID);
 
-    public boolean removePackage(int packageID);
+    public boolean removePackage(String packageID);
+
+    public List<String> getPackages();
 
     public TRUCK_STATE getState();
 

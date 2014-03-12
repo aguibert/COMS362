@@ -10,11 +10,11 @@ public interface TruckController {
 
     public boolean refreshTruckRoute(int truckID);
 
-    public Package[] getPackagesOnTruck(int truckID);
+    public List<Package> getPackagesOnTruck(int truckID);
 
-    public boolean addPackageToTruck(int packageID, int invoiceID, int truckID);
+    public boolean addPackageToTruck(String packageID, int truckID);
 
-    public boolean removePackageFromTruck(int packageID, int invoiceID, int truckID);
+    public boolean removePackageFromTruck(String packageID, int truckID);
 
     public List<Truck> getTrucks(TRUCK_STATE state);
 
