@@ -2,21 +2,18 @@ package system.invoice;
 
 import java.util.List;
 
-import system.truck.Route;
-
 public interface InvoiceController {
-    boolean createInvoice(String companyName, String customerName, String customerAddress, String customerPhone,
-                          int numPackages, String invoiceDescription);
 
-    boolean updateRoute(Route r, Invoice inv);
+    public boolean createInvoice(String companyName, String customerName, String customerAddress, String customerPhone,
+                                 int numPackages, String invoiceDescription);
 
-    boolean createPackageRoute(String start, String[] destinations, Package pkg);
+    public boolean cancelInvoice(int invoiceID);
 
-    boolean cancelInvoice(int invoiceID);
+    public List<Invoice> getCustomerInvoices(String customerName);
 
-    List<Invoice> getCustomerInvoices(String customerName);
+    public boolean addPackageToInvoice(String packageID);
 
-    boolean addPackageToInvoice(int invoiceID, int packageID);
+    public Invoice getInvoice(int invoiceID);
 
-    Invoice getInvoice(int invoiceID);
+    public Package getPackage(String packageID);
 }

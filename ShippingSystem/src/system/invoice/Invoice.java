@@ -16,7 +16,11 @@ public interface Invoice {
         CANCELLED
     }
 
-    public boolean changeStatus(INVOICE_STATE newState);
+    public Package getPackage(String packageID);
 
-    boolean addPackageToInvoice(int packageID);
+    public boolean setStatus(INVOICE_STATE newState);
+
+    public INVOICE_STATE getStatus();
+
+    public boolean addPackage(Package p);
 }

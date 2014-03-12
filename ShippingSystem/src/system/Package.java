@@ -15,7 +15,17 @@ public interface Package {
         CANCELLED
     }
 
+    public boolean setState(PACKAGE_STATE newState);
+
+    public boolean getState(PACKAGE_STATE newState);
+
     public int getPackageID();
 
+    public boolean setInvoice(Invoice i);
+
     public Invoice getInvoice();
+
+    public boolean setLocation(String location);
+
+    public String getLocation();
 }

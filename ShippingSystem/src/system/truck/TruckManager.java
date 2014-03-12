@@ -2,23 +2,23 @@ package system.truck;
 
 import java.util.List;
 
+import system.truck.Truck.TRUCK_STATE;
+
 public interface TruckManager {
 
-    public enum TRUCK_STATE {
-        ALL_STATES,
-        AVAILABLE,
-        IN_ROUTE,
-        BROKEN,
-        LOADING
-    }
+    public Route createRoute(int truckID);
 
-    public Route createRoute(Package[] packages);
+    public boolean refreshTruckRoute(int truckID);
 
-    public Package[] getPackagesOnTruck(int truckID);
+    public List<Package> getPackagesOnTruck(int truckID);
 
-    public boolean addPackageToTruck(int packageID, int truckID);
+    public boolean addPackageToTruck(String packageID, int truckID);
+
+    public boolean removePackageFromTruck(String packageID, int truckID);
 
     public List<Truck> getTrucks(TRUCK_STATE state);
 
-    public boolean refreshTruckRoute(int truckID);
+    public boolean setTruckState(int truckID, TRUCK_STATE newState);
+
+    public Truck getTruck(int truckID);
 }
