@@ -1,7 +1,7 @@
 /**
  * 
  */
-package system;
+package system.truck;
 
 /**
  * @author Andrew

@@ -2,8 +2,6 @@ package system.truck;
 
 import java.util.List;
 
-import system.Route;
-
 public interface TruckManager {
 
     public enum TRUCK_STATE {
@@ -18,7 +16,7 @@ public interface TruckManager {
 
     public Package[] getPackagesOnTruck(int truckID);
 
-    public boolean addPackageToTruck(Package p, Truck t);
+    public boolean addPackageToTruck(int packageID, int truckID);
 
     public List<Truck> getTrucks(TRUCK_STATE state);
 

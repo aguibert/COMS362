@@ -3,7 +3,6 @@
  */
 package system.invoice;
 
-
 /**
  * @author Andrew
  * 
@@ -18,4 +17,6 @@ public interface Invoice {
     }
 
     public boolean changeStatus(INVOICE_STATE newState);
+
+    boolean addPackageToInvoice(int packageID);
 }

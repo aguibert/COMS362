@@ -9,4 +9,6 @@ package system.truck;
  */
 public interface Truck {
     public boolean refreshTruckRoute();
+
+    public boolean addPackageToTruck(Package p);
 }

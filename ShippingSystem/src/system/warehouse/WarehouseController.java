@@ -1,5 +1,7 @@
 package system.warehouse;
 
 public interface WarehouseController {
-    public boolean packageArrival();
+
+    /** Returns generated package ID */
+    public int packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost);
 }

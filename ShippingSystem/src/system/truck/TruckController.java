@@ -9,7 +9,7 @@ public interface TruckController {
 
     public Package[] getPackagesOnTruck(int truckID);
 
-    public boolean addPackageToTruck(Package p, Truck t);
+    public boolean addPackageToTruck(int packageID, int truckID);
 
     List<Truck> getTrucks(TRUCK_STATE state);
 
