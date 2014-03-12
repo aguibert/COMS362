@@ -22,4 +22,6 @@ public interface Package {
     public int getPackageID();
 
     public Invoice getInvoice();
+
+    public String getLocation();
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import system.truck.Truck.TRUCK_STATE;
 
 public interface TruckController {
-    public boolean createRoute(Package[] packages);
+    public boolean createRoute(int truckID);
 
     public Package[] getPackagesOnTruck(int truckID);
 

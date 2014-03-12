@@ -3,7 +3,6 @@
  */
 package system.truck;
 
-
 /**
  * @author Andrew
  * 
@@ -18,7 +17,11 @@ public interface Truck {
         LOADING
     }
 
-    public boolean refreshTruckRoute();
+    public String getLocation();
+
+    public Route createTruckRoute();
+
+    public Route refreshTruckRoute();
 
     public boolean addPackageToTruck(int packageID);
 
