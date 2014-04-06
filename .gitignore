@@ -13,6 +13,7 @@ tmp/
 *~.nib
 local.properties
 .loadpath
+ShippingSystem/myDB
 
 # External tool builders
 .externalToolBuilders/
