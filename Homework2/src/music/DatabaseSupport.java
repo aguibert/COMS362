@@ -24,3 +24,21 @@ public interface DatabaseSupport {
 
     public List<Artist> searchArtistByArtistName(String artistName);
 }
+
+// For iteration 1
+/*
+public interface DatabaseSupport {
+
+    public boolean putSong(Song s);
+
+    public Song getSong(int songID);
+
+    public Song deleteSong(int songID);
+
+    public boolean putArtist(Artist a);
+
+    public Artist getArtist(int artistID);
+
+    public Artist deleteArtist(int artistID);
+}
+*/
