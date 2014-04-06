@@ -1,6 +1,5 @@
 package music;
 
-import java.util.Map;
 
 public interface Song {
 
@@ -8,5 +7,5 @@ public interface Song {
 
     public boolean addArtist(int artistID);
 
-    public boolean updateSong(Map<String, Object> fieldToValue);
+    public boolean updateSong(String fieldName, String fieldValue);
 }
