@@ -1,12 +1,20 @@
 package music;
 
-import java.util.Map;
-
 public interface Song {
 
     public int getID();
 
     public boolean addArtist(int artistID);
 
-    public boolean updateSong(Map<String, Object> fieldToValue);
+    public boolean updateSong(String fieldName, String fieldValue);
 }
+
+/*
+ * For iteration 1
+public interface Song {
+
+    public int getID();
+
+    public boolean addArtist(int artistID);
+}
+*/
