@@ -3,6 +3,8 @@
  */
 package system.warehouse;
 
+import system.DatabaseSupportImpl;
+
 /**
  * @author Andrew
  * 
@@ -29,6 +31,7 @@ public class WarehouseManagerImpl implements WarehouseManager
     @Override
     public int createWarehouse() {
         Warehouse w = new WarehouseImpl(nextWarehouse++);
+        new DatabaseSupportImpl().putWareHouse(w);
         return w.getID();
     }
 
@@ -40,6 +43,8 @@ public class WarehouseManagerImpl implements WarehouseManager
     @Override
     public Package packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
         // TODO Auto-generated method stub
+        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
+        w.packageArrival(customerName, destinationAddress, weight, shippingCost);
         return null;
     }
 
