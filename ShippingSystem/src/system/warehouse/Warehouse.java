@@ -4,6 +4,7 @@
 package system.warehouse;
 
 import java.util.List;
+import java.util.Set;
 
 import system.Package.PACKAGE_STATE;
 
@@ -18,4 +19,8 @@ public interface Warehouse {
     public boolean packageDeparture(String packageID);
 
     public List<Package> getPackages(PACKAGE_STATE state);
+
+    public int getID();
+
+    public Set<Integer> getPackages();
 }

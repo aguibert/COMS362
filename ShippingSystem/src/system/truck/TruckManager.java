@@ -6,6 +6,8 @@ import system.truck.Truck.TRUCK_STATE;
 
 public interface TruckManager {
 
+    public int createTruck();
+
     public Route createRoute(int truckID);
 
     public boolean refreshTruckRoute(int truckID);
