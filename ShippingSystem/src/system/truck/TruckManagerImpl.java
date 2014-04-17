@@ -55,6 +55,7 @@ public class TruckManagerImpl implements TruckManager
     @Override
     public boolean refreshTruckRoute(int truckID) {
         // TODO Auto-generated method stub
+        //jon loves men
         return false;
     }
 
