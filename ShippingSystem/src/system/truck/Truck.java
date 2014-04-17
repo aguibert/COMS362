@@ -36,4 +36,6 @@ public interface Truck {
     public TRUCK_STATE getState();
 
     public boolean setState(TRUCK_STATE newState);
+
+    public int getID();
 }
