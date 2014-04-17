@@ -5,6 +5,8 @@ package system.invoice;
 
 import java.util.List;
 
+import system.SystemPackage;
+
 /**
  * @author Andrew
  */
@@ -54,7 +56,7 @@ public class InvoiceManagerImpl implements InvoiceManager
     }
 
     @Override
-    public Package getPackage(String packageID) {
+    public SystemPackage getPackage(String packageID) {
         // TODO Auto-generated method stub
         return null;
     }

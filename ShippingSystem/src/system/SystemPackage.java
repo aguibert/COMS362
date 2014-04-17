@@ -5,7 +5,7 @@ package system;
 
 import system.invoice.Invoice;
 
-public interface Package {
+public interface SystemPackage {
 
     public enum PACKAGE_STATE {
         WAREHOUSE,

@@ -3,6 +3,8 @@
  */
 package system.warehouse;
 
+import system.SystemPackage;
+
 /**
  * @author Andrew
  * 
@@ -38,7 +40,7 @@ public class WarehouseManagerImpl implements WarehouseManager
      * @see system.warehouse.WarehouseManager#packageArrival(int, int, java.lang.String, java.lang.String, double, double)
      */
     @Override
-    public Package packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
+    public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
         // TODO Auto-generated method stub
         return null;
     }

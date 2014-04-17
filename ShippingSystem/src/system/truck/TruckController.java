@@ -2,6 +2,7 @@ package system.truck;
 
 import java.util.List;
 
+import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
 public interface TruckController {
@@ -10,7 +11,7 @@ public interface TruckController {
 
     public boolean refreshTruckRoute(int truckID);
 
-    public List<Package> getPackagesOnTruck(int truckID);
+    public List<SystemPackage> getPackagesOnTruck(int truckID);
 
     public boolean addPackageToTruck(String packageID, int truckID);
 
