@@ -23,4 +23,6 @@ public interface Invoice {
     public INVOICE_STATE getStatus();
 
     public boolean addPackage(Package p);
+
+    public int getID();
 }
