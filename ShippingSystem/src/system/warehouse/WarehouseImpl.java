@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import system.Package.PACKAGE_STATE;
+import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
 
 /**
  * @author Andrew
@@ -29,7 +30,7 @@ public class WarehouseImpl implements Warehouse, Serializable
      * @see system.warehouse.Warehouse#packageArrival(java.lang.String, java.lang.String, double, double)
      */
     @Override
-    public Package packageArrival(String customerName, String destinationAddress, double weight, double shippingCost) {
+    public SystemPackage packageArrival(String customerName, String destinationAddress, double weight, double shippingCost) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -51,7 +52,7 @@ public class WarehouseImpl implements Warehouse, Serializable
      * @see system.warehouse.Warehouse#getPackages(system.Package.PACKAGE_STATE)
      */
     @Override
-    public List<Package> getPackages(PACKAGE_STATE state) {
+    public List<SystemPackage> getPackages(PACKAGE_STATE state) {
         // TODO Auto-generated method stub
         return null;
     }

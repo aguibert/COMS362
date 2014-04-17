@@ -5,6 +5,7 @@ package system.truck;
 
 import java.util.List;
 
+import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
 /**
@@ -65,7 +66,7 @@ public class TruckManagerImpl implements TruckManager
      * @see system.truck.TruckManager#getPackagesOnTruck(int)
      */
     @Override
-    public List<Package> getPackagesOnTruck(int truckID) {
+    public List<SystemPackage> getPackagesOnTruck(int truckID) {
         // TODO Auto-generated method stub
         return null;
     }
