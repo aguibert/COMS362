@@ -4,6 +4,10 @@
 package system.invoice;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import system.SystemPackage;
 
 /**
  * @author Andrew
@@ -13,33 +17,50 @@ public class InvoiceImpl implements Invoice, Serializable
 {
     private static final long serialVersionUID = 2322652424613221016L;
     private final int ID;
+    private INVOICE_STATE ivState;
+    private final String companyName;
+    private final String customerName;
+    private final String customerAddress;
+    private final String customerPhone;
+    private int numPackages;
+    private String description;
+
+    private Set<Integer> packages = new HashSet<>();
 
     protected InvoiceImpl(int _id, String companyName, String customerName, String customerAddress, String customerPhone, int numPackages, String invoiceDescription) {
         this.ID = _id;
+        this.companyName = companyName;
+        this.customerName = customerName;
+        this.customerAddress = customerAddress;
+        this.customerPhone = customerPhone;
+        this.numPackages = numPackages;
+        this.description = invoiceDescription;
+
+        ivState = INVOICE_STATE.IN_PROGRESS;
     }
 
     @Override
-    public Package getPackage(String packageID) {
+    public SystemPackage getPackage(String packageID) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean setStatus(INVOICE_STATE newState) {
-        // TODO Auto-generated method stub
-        return false;
+        if (newState != ivState)
+            ivState = newState;
+        return true;
     }
 
     @Override
     public INVOICE_STATE getStatus() {
-        // TODO Auto-generated method stub
-        return null;
+        return ivState;
     }
 
     @Override
-    public boolean addPackage(Package p) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean addPackage(SystemPackage p) {
+        packages.add(p.getPackageID());
+        return true;
     }
 
     @Override

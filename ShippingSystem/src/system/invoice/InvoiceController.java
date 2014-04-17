@@ -2,6 +2,8 @@ package system.invoice;
 
 import java.util.List;
 
+import system.SystemPackage;
+
 public interface InvoiceController {
 
     public boolean createInvoice(String companyName, String customerName, String customerAddress, String customerPhone,
@@ -15,5 +17,5 @@ public interface InvoiceController {
 
     public Invoice getInvoice(int invoiceID);
 
-    public Package getPackage(String packageID);
+    public SystemPackage getPackage(String packageID);
 }

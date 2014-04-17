@@ -3,6 +3,8 @@
  */
 package system.invoice;
 
+import system.SystemPackage;
+
 /**
  * @author Andrew
  * 
@@ -16,13 +18,14 @@ public interface Invoice {
         CANCELLED
     }
 
-    public Package getPackage(String packageID);
+    public SystemPackage getPackage(String packageID);
 
     public boolean setStatus(INVOICE_STATE newState);
 
     public INVOICE_STATE getStatus();
 
-    public boolean addPackage(Package p);
+    public boolean addPackage(SystemPackage p);
 
     public int getID();
+
 }
