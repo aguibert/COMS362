@@ -17,11 +17,9 @@ public interface SystemPackage {
 
     public boolean setState(PACKAGE_STATE newState);
 
-    public boolean getState(PACKAGE_STATE newState);
+    public PACKAGE_STATE getState();
 
     public int getPackageID();
-
-    public boolean setInvoice(Invoice i);
 
     public Invoice getInvoice();
 

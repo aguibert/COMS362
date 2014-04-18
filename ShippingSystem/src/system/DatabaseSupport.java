@@ -23,4 +23,8 @@ public interface DatabaseSupport {
     public boolean putWareHouse(Warehouse w);
 
     public Warehouse getWareHouse(int warehouseID);
+
+    public boolean putPackage(SystemPackage p);
+
+    public SystemPackage getPackage(int packageID);
 }
