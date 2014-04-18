@@ -68,7 +68,7 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public List<SystemPackage> getPackagesOnTruck(int truckID) {
-        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
         return t.getPackages();
     }
@@ -80,13 +80,12 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public boolean addPackageToTruck(int packageID, int truckID) {
-        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
-        boolean completed = t.addPackage(packageID);
-        if (completed == true) { //if package is added return true
-            return true;
+        if (t == null) {
+            return false;
         }
-        return false;
+        return t.addPackage(packageID);
     }
 
     /*
@@ -96,13 +95,9 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public boolean removePackageFromTruck(int packageID, int truckID) {
-        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
-        boolean completed = t.removePackage(packageID);
-        if (completed == true) {
-            return true;
-        }
-        return false;
+        return t.removePackage(packageID);
     }
 
     /*
