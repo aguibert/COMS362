@@ -16,6 +16,7 @@ import java.util.List;
 
 import system.invoice.Invoice;
 import system.truck.Truck;
+import system.truck.Truck.TRUCK_STATE;
 import system.warehouse.Warehouse;
 
 /**
@@ -209,16 +210,50 @@ public class DatabaseSupportImpl implements DatabaseSupport
             return toReturn;
 
         try (Connection conn = getConnection()) {
-            Invoice i;
             PreparedStatement ps = conn.prepareStatement("select * from " + INVOICE_TABLE);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
-                i = (Invoice) ois.readObject();
+                Invoice i = (Invoice) ois.readObject();
                 if (i.getCustomerName() != null && i.getCustomerName().contains(customerName))
                     toReturn.add(i);
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return toReturn;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see system.DatabaseSupport#getTrucks(system.truck.Truck.TRUCK_STATE)
+     */
+    @Override
+    public List<Truck> getTrucks(TRUCK_STATE state)
+    {
+        List<Truck> toReturn = new ArrayList<>();
+
+        if (state == null)
+            return toReturn;
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from " + TRUCK_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                Truck t = (Truck) ois.readObject();
+                if (state == TRUCK_STATE.ALL_STATES || state == t.getState())
+                    toReturn.add(t);
 
                 ois.close();
                 bis.close();
