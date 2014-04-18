@@ -97,6 +97,9 @@ public class TruckManagerImpl implements TruckManager
     public boolean removePackageFromTruck(int packageID, int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
+        if (t == null) {
+            return false;
+        }
         return t.removePackage(packageID);
     }
 
@@ -120,8 +123,7 @@ public class TruckManagerImpl implements TruckManager
     public boolean setTruckState(int truckID, TRUCK_STATE newState) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
-        t.setState(newState);
-        return true;
+        return t.setState(newState);
     }
 
     /*
