@@ -4,16 +4,12 @@
 package system.warehouse;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
-import system.SystemPackage.PACKAGE_STATE;
 import system.SystemPackageImpl;
 
 /**
@@ -50,24 +46,12 @@ public class WarehouseImpl implements Warehouse, Serializable
     public boolean packageDeparture(int packageID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         SystemPackage p = dbs.getPackage(packageID);
+        if (p == null) {
+            return false;
+        }
+        packages.remove(packageID);
         p.setState(SystemPackage.PACKAGE_STATE.ON_TRUCK);
         return dbs.putPackage(p);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.Warehouse#getPackages(system.Package.PACKAGE_STATE)
-     */
-    @Override
-    public List<SystemPackage> getPackages(PACKAGE_STATE state) {
-        List<SystemPackage> ps = new ArrayList<SystemPackage>();
-        DatabaseSupport dbs = new DatabaseSupportImpl();
-        Iterator<Integer> iter = packages.iterator();
-        for (int i = 0; i < packages.size(); i++) {
-            ps.add(dbs.getPackage(iter.next()));
-        }
-        return ps;
     }
 
     /*
