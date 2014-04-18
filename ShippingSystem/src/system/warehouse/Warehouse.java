@@ -15,9 +15,9 @@ import system.SystemPackage.PACKAGE_STATE;
  */
 public interface Warehouse {
 
-    public SystemPackage packageArrival(String customerName, String destinationAddress, double weight, double shippingCost);
+    public SystemPackage packageArrival(int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost);
 
-    public boolean packageDeparture(String packageID);
+    public boolean packageDeparture(int packageID);
 
     public List<SystemPackage> getPackages(PACKAGE_STATE state);
 

@@ -3,6 +3,8 @@
  */
 package system.warehouse;
 
+import system.DatabaseSupport;
+import system.DatabaseSupportImpl;
 import system.SystemPackage;
 
 /**
@@ -41,8 +43,12 @@ public class WarehouseManagerImpl implements WarehouseManager
      */
     @Override
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
-        // TODO Auto-generated method stub
-        return null;
+        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
+        SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        dbs.getInvoice(invoiceID).addPackage(p);
+        dbs.putPackage(p);
+        return p;
     }
 
     /*
@@ -51,9 +57,9 @@ public class WarehouseManagerImpl implements WarehouseManager
      * @see system.warehouse.WarehouseManager#packageDeparture(int, java.lang.String)
      */
     @Override
-    public boolean packageDeparture(int warehouseID, String packageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean packageDeparture(int warehouseID, int packageID) {
+        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
+        return w.packageDeparture(packageID);
     }
 
     /*
@@ -63,8 +69,7 @@ public class WarehouseManagerImpl implements WarehouseManager
      */
     @Override
     public Warehouse getWareHouse(int warehouseID) {
-        // TODO Auto-generated method stub
-        return null;
+        return new DatabaseSupportImpl().getWareHouse(warehouseID);
     }
 
 }

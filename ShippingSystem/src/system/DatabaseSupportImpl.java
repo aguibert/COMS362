@@ -27,12 +27,15 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private static final String TRUCK_TABLE = "truck_TABLE";
     private static final String INVOICE_TABLE = "invoice_TABLE";
     private static final String WAREHOUSE_TABLE = "warehouse_TABLE";
+    private static final String PACKAGE_TABLE = "package_TABLE";
     private static final String CREATE_TRUCK_TABLE = "CREATE TABLE " + TRUCK_TABLE +
                                                      "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_INVOICE_TABLE = "CREATE TABLE " + INVOICE_TABLE +
                                                        "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_WAREHOUSE_TABLE = "CREATE TABLE " + WAREHOUSE_TABLE +
                                                          "( id int NOT NULL, javaObject blob )";
+    private static final String CREATE_PACKAGE_TABLE = "CREATE TABLE " + PACKAGE_TABLE +
+                                                       "( id int NOT NULL,javaObject blob )";
 
     public DatabaseSupportImpl() {}
 
@@ -180,6 +183,52 @@ public class DatabaseSupportImpl implements DatabaseSupport
         return w;
     }
 
+    @Override
+    public boolean putPackage(SystemPackage p) {
+        try (Connection conn = getConnection()) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+            oos.writeObject(p);
+            oos.flush();
+            oos.close();
+            bos.close();
+
+            byte[] data = bos.toByteArray();
+            PreparedStatement ps = conn.prepareStatement("insert into " + PACKAGE_TABLE + " (ID, javaObject) values(?, ?)");
+            ps.setInt(1, p.getPackageID());
+            ps.setObject(2, data);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public SystemPackage getPackage(int packageID) {
+        SystemPackage p = null;
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from " + PACKAGE_TABLE + " where id=" + packageID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                p = (SystemPackage) ois.readObject();
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return p;
+    }
+
     private Connection getConnection() {
         try {
             Class.forName(DB_DRIVER).newInstance();
@@ -207,6 +256,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
         } catch (Exception e) {
             ex = e;
         }
+        try (Connection conn = getConnection()) {
+            conn.createStatement().execute(CREATE_PACKAGE_TABLE);
+        } catch (Exception e) {
+            ex = e;
+        }
         if (ex != null)
             throw ex;
     }
@@ -228,7 +282,13 @@ public class DatabaseSupportImpl implements DatabaseSupport
         } catch (Exception e) {
             ex = e;
         }
+        try (Connection conn = getConnection()) {
+            conn.createStatement().execute("drop table " + PACKAGE_TABLE); // Only run this once
+        } catch (Exception e) {
+            ex = e;
+        }
         if (ex != null)
             throw ex;
     }
+
 }
