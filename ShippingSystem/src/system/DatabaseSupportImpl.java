@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import system.invoice.Invoice;
 import system.truck.Truck;
@@ -39,21 +41,19 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
     public DatabaseSupportImpl() {}
 
-    @Override
-    public boolean putTruck(Truck t) {
-
+    private boolean putCommon(Object o, String table, int id) {
         try (Connection conn = getConnection()) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
 
-            oos.writeObject(t);
+            oos.writeObject(o);
             oos.flush();
             oos.close();
             bos.close();
 
             byte[] data = bos.toByteArray();
-            PreparedStatement ps = conn.prepareStatement("insert into " + TRUCK_TABLE + " (ID, javaObject) values(?, ?)");
-            ps.setInt(1, t.getID());
+            PreparedStatement ps = conn.prepareStatement("insert into " + table + " (ID, javaObject) values(?, ?)");
+            ps.setInt(1, id);
             ps.setObject(2, data);
             ps.executeUpdate();
             ps.close();
@@ -62,171 +62,75 @@ public class DatabaseSupportImpl implements DatabaseSupport
             return false;
         }
         return true;
+    }
+
+    private Object getCommon(int id, String table) {
+        Object o = null;
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from " + table + " where id=" + id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                o = ois.readObject();
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return o;
+    }
+
+    @Override
+    public boolean putTruck(Truck t) {
+
+        return putCommon(t, TRUCK_TABLE, t.getID());
     }
 
     @Override
     public Truck getTruck(int truckID) {
 
-        Truck t = null;
-        try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + TRUCK_TABLE + " where id=" + truckID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
-                ObjectInputStream ois = new ObjectInputStream(bis);
-
-                t = (Truck) ois.readObject();
-
-                ois.close();
-                bis.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return t;
+        return (Truck) getCommon(truckID, TRUCK_TABLE);
     }
 
     @Override
     public boolean putInvoice(Invoice i) {
 
-        try (Connection conn = getConnection()) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-
-            oos.writeObject(i);
-            oos.flush();
-            oos.close();
-            bos.close();
-
-            byte[] data = bos.toByteArray();
-            PreparedStatement ps = conn.prepareStatement("insert into " + INVOICE_TABLE + " (ID, javaObject) values(?, ?)");
-            ps.setInt(1, i.getID());
-            ps.setObject(2, data);
-            ps.executeUpdate();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return putCommon(i, INVOICE_TABLE, i.getID());
     }
 
     @Override
     public Invoice getInvoice(int invoiceID) {
 
-        Invoice i = null;
-        try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + INVOICE_TABLE + " where id=" + invoiceID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
-                ObjectInputStream ois = new ObjectInputStream(bis);
-
-                i = (Invoice) ois.readObject();
-
-                ois.close();
-                bis.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return i;
+        return (Invoice) getCommon(invoiceID, INVOICE_TABLE);
     }
 
     @Override
     public boolean putWareHouse(Warehouse w) {
 
-        try (Connection conn = getConnection()) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-
-            oos.writeObject(w);
-            oos.flush();
-            oos.close();
-            bos.close();
-
-            byte[] data = bos.toByteArray();
-            PreparedStatement ps = conn.prepareStatement("insert into " + WAREHOUSE_TABLE + " (ID, javaObject) values(?, ?)");
-            ps.setInt(1, w.getID());
-            ps.setObject(2, data);
-            ps.executeUpdate();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return putCommon(w, WAREHOUSE_TABLE, w.getID());
     }
 
     @Override
     public Warehouse getWareHouse(int warehouseID) {
 
-        Warehouse w = null;
-        try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + WAREHOUSE_TABLE + " where id=" + warehouseID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
-                ObjectInputStream ois = new ObjectInputStream(bis);
-
-                w = (Warehouse) ois.readObject();
-
-                ois.close();
-                bis.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return w;
+        return (Warehouse) getCommon(warehouseID, WAREHOUSE_TABLE);
     }
 
     @Override
     public boolean putPackage(SystemPackage p) {
-        try (Connection conn = getConnection()) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
 
-            oos.writeObject(p);
-            oos.flush();
-            oos.close();
-            bos.close();
-
-            byte[] data = bos.toByteArray();
-            PreparedStatement ps = conn.prepareStatement("insert into " + PACKAGE_TABLE + " (ID, javaObject) values(?, ?)");
-            ps.setInt(1, p.getPackageID());
-            ps.setObject(2, data);
-            ps.executeUpdate();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return putCommon(p, PACKAGE_TABLE, p.getPackageID());
     }
 
     @Override
     public SystemPackage getPackage(int packageID) {
-        SystemPackage p = null;
-        try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + PACKAGE_TABLE + " where id=" + packageID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
-                ObjectInputStream ois = new ObjectInputStream(bis);
 
-                p = (SystemPackage) ois.readObject();
-
-                ois.close();
-                bis.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return p;
+        return (SystemPackage) getCommon(packageID, PACKAGE_TABLE);
     }
 
     private Connection getConnection() {
@@ -291,4 +195,39 @@ public class DatabaseSupportImpl implements DatabaseSupport
             throw ex;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see system.DatabaseSupport#getInvoiceByName(java.lang.String)
+     */
+    @Override
+    public List<Invoice> getInvoiceByName(String customerName) {
+
+        List<Invoice> toReturn = new ArrayList<>();
+
+        if (customerName == null || customerName.trim().length() == 0)
+            return toReturn;
+
+        try (Connection conn = getConnection()) {
+            Invoice i;
+            PreparedStatement ps = conn.prepareStatement("select * from " + INVOICE_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                i = (Invoice) ois.readObject();
+                if (i.getCustomerName() != null && i.getCustomerName().contains(customerName))
+                    toReturn.add(i);
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return toReturn;
+    }
 }

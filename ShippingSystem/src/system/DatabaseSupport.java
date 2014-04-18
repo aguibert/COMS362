@@ -3,6 +3,8 @@
  */
 package system;
 
+import java.util.List;
+
 import system.invoice.Invoice;
 import system.truck.Truck;
 import system.warehouse.Warehouse;
@@ -19,6 +21,8 @@ public interface DatabaseSupport {
     public boolean putInvoice(Invoice i);
 
     public Invoice getInvoice(int invoiceID);
+
+    public List<Invoice> getInvoiceByName(String customerName);
 
     public boolean putWareHouse(Warehouse w);
 
