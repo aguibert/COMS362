@@ -5,7 +5,9 @@ package system.invoice;
 
 import java.util.List;
 
+import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.invoice.Invoice.INVOICE_STATE;
 
 /**
  * @author Andrew
@@ -33,32 +35,38 @@ public class InvoiceManagerImpl implements InvoiceManager
 
     @Override
     public boolean cancelInvoice(int invoiceID) {
-        // TODO Auto-generated method stub
-        return false;
+        Invoice i = new DatabaseSupportImpl().getInvoice(invoiceID);
+
+        if (i == null)
+            return false;
+
+        return i.setStatus(INVOICE_STATE.CANCELLED);
     }
 
     @Override
     public List<Invoice> getCustomerInvoices(String customerName) {
-        // TODO Auto-generated method stub
-        return null;
+        return new DatabaseSupportImpl().getInvoiceByName(customerName);
     }
 
     @Override
-    public boolean addPackageToInvoice(String packageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean addPackageToInvoice(int packageID, int invoiceID) {
+
+        Invoice i = new DatabaseSupportImpl().getInvoice(invoiceID);
+
+        if (i == null)
+            return false;
+
+        return i.addPackage(packageID);
     }
 
     @Override
     public Invoice getInvoice(int invoiceID) {
-        // TODO Auto-generated method stub
-        return null;
+        return new DatabaseSupportImpl().getInvoice(invoiceID);
     }
 
     @Override
-    public SystemPackage getPackage(String packageID) {
-        // TODO Auto-generated method stub
-        return null;
+    public SystemPackage getPackage(int packageID) {
+        return new DatabaseSupportImpl().getPackage(packageID);
     }
 
 }

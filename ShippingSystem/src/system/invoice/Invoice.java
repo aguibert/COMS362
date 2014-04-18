@@ -18,14 +18,16 @@ public interface Invoice {
         CANCELLED
     }
 
-    public SystemPackage getPackage(String packageID);
+    public SystemPackage getPackage(int packageID);
 
     public boolean setStatus(INVOICE_STATE newState);
 
     public INVOICE_STATE getStatus();
 
-    public boolean addPackage(SystemPackage p);
+    public boolean addPackage(int p);
 
     public int getID();
+
+    public String getCustomerName();
 
 }

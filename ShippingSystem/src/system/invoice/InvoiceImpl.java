@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import system.DatabaseSupportImpl;
 import system.SystemPackage;
 
 /**
@@ -40,9 +41,12 @@ public class InvoiceImpl implements Invoice, Serializable
     }
 
     @Override
-    public SystemPackage getPackage(String packageID) {
-        // TODO Auto-generated method stub
-        return null;
+    public SystemPackage getPackage(int packageID) {
+        if (!packages.contains(packageID))
+            return null;
+        else {
+            return new DatabaseSupportImpl().getPackage(packageID);
+        }
     }
 
     @Override
@@ -58,13 +62,18 @@ public class InvoiceImpl implements Invoice, Serializable
     }
 
     @Override
-    public boolean addPackage(SystemPackage p) {
-        packages.add(p.getPackageID());
+    public boolean addPackage(int p) {
+        packages.add(p);
         return true;
     }
 
     @Override
     public int getID() {
         return this.ID;
+    }
+
+    @Override
+    public String getCustomerName() {
+        return customerName;
     }
 }
