@@ -5,6 +5,8 @@ package system.truck;
 
 import java.util.List;
 
+import system.DatabaseSupport;
+import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
@@ -56,7 +58,6 @@ public class TruckManagerImpl implements TruckManager
     @Override
     public boolean refreshTruckRoute(int truckID) {
         // TODO Auto-generated method stub
-        //jon loves men
         return false;
     }
 
@@ -67,8 +68,9 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public List<SystemPackage> getPackagesOnTruck(int truckID) {
-        // TODO Auto-generated method stub
-        return null;
+        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        Truck t = db.getTruck(truckID);
+        return t.getPackages();
     }
 
     /*
@@ -77,8 +79,13 @@ public class TruckManagerImpl implements TruckManager
      * @see system.truck.TruckManager#addPackageToTruck(java.lang.String, int)
      */
     @Override
-    public boolean addPackageToTruck(String packageID, int truckID) {
-        // TODO Auto-generated method stub
+    public boolean addPackageToTruck(int packageID, int truckID) {
+        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        Truck t = db.getTruck(truckID);
+        boolean completed = t.addPackage(packageID);
+        if (completed == true) { //if package is added return true
+            return true;
+        }
         return false;
     }
 
@@ -88,8 +95,13 @@ public class TruckManagerImpl implements TruckManager
      * @see system.truck.TruckManager#removePackageFromTruck(java.lang.String, int)
      */
     @Override
-    public boolean removePackageFromTruck(String packageID, int truckID) {
-        // TODO Auto-generated method stub
+    public boolean removePackageFromTruck(int packageID, int truckID) {
+        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        Truck t = db.getTruck(truckID);
+        boolean completed = t.removePackage(packageID);
+        if (completed == true) {
+            return true;
+        }
         return false;
     }
 
@@ -100,8 +112,8 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public List<Truck> getTrucks(TRUCK_STATE state) {
-        // TODO Auto-generated method stub
-        return null;
+        DatabaseSupport db = new DatabaseSupportImpl();
+        return db.getTrucks(state);
     }
 
     /*
@@ -111,8 +123,10 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public boolean setTruckState(int truckID, TRUCK_STATE newState) {
-        // TODO Auto-generated method stub
-        return false;
+        DatabaseSupport db = new DatabaseSupportImpl();
+        Truck t = db.getTruck(truckID);
+        t.setState(newState);
+        return true;
     }
 
     /*
@@ -122,8 +136,8 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public Truck getTruck(int truckID) {
-        // TODO Auto-generated method stub
-        return null;
+        DatabaseSupport db = new DatabaseSupportImpl();
+        return db.getTruck(truckID);
     }
 
 }

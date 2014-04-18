@@ -15,9 +15,9 @@ public interface TruckManager {
 
     public List<SystemPackage> getPackagesOnTruck(int truckID);
 
-    public boolean addPackageToTruck(String packageID, int truckID);
+    public boolean addPackageToTruck(int packageID, int truckID);
 
-    public boolean removePackageFromTruck(String packageID, int truckID);
+    public boolean removePackageFromTruck(int packageID, int truckID);
 
     public List<Truck> getTrucks(TRUCK_STATE state);
 
