@@ -144,56 +144,87 @@ public class DatabaseSupportImpl implements DatabaseSupport
         } // Load driver class into runtime
     }
 
-    public void createTable() throws Exception {
-        Exception ex = null;
+    public boolean createTable() {
+
+        boolean caughtEx = false;
+
+        try {
+            Class.forName(DB_DRIVER).newInstance();
+            DriverManager.getConnection(DB_URL + ";create=true");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } // Load driver class into runtime
+
         try (Connection conn = getConnection()) {
             conn.createStatement().execute(CREATE_TRUCK_TABLE);
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute(CREATE_INVOICE_TABLE);
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute(CREATE_WAREHOUSE_TABLE);
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute(CREATE_PACKAGE_TABLE);
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
-        if (ex != null)
-            throw ex;
+        return !caughtEx;
     }
 
-    public void dropTable() throws Exception {
-        Exception ex = null;
+    public boolean dropTable() {
+
+        boolean caughtEx = false;
+
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + TRUCK_TABLE); // Only run this once
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + INVOICE_TABLE); // Only run this once
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + WAREHOUSE_TABLE); // Only run this once
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + PACKAGE_TABLE); // Only run this once
         } catch (Exception e) {
-            ex = e;
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
         }
-        if (ex != null)
-            throw ex;
+
+        return !caughtEx;
     }
 
     /*

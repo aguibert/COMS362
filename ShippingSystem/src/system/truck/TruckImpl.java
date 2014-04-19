@@ -22,7 +22,7 @@ public class TruckImpl implements Truck, Serializable {
     private static final long serialVersionUID = 6133248066153670641L;
     private final int ID;
     private String location;
-    private Set<Integer> packages = new HashSet();
+    private Set<Integer> packages = new HashSet<>();
     private TRUCK_STATE state;
 
     protected TruckImpl(int _id) {
