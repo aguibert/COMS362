@@ -9,9 +9,6 @@ import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.invoice.Invoice.INVOICE_STATE;
 
-/**
- * @author Andrew
- */
 public class InvoiceManagerImpl implements InvoiceManager
 {
     private int nextInvoiceID = 0;
@@ -29,6 +26,8 @@ public class InvoiceManagerImpl implements InvoiceManager
     @Override
     public int createInvoice(String companyName, String customerName, String customerAddress, String customerPhone, int numPackages, String invoiceDescription) {
         Invoice i = new InvoiceImpl(nextInvoiceID++, companyName, customerName, customerAddress, customerPhone, numPackages, invoiceDescription);
+
+        new DatabaseSupportImpl().putInvoice(i);
 
         return i.getID();
     }

@@ -4,6 +4,8 @@ import system.SystemPackage;
 
 public interface WarehouseController {
 
+    public int createWarehouse();
+
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost);
 
     public boolean packageDeparture(int warehouseID, int packageID);
