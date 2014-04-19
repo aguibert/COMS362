@@ -35,4 +35,16 @@ public interface DatabaseSupport {
 
     public SystemPackage getPackage(int packageID);
 
+    /**
+     * Gets the next ID that should be assigned to the corresponding id type.
+     * 
+     * @param idType
+     *            <br> 'i' for invoice
+     *            <br> 't' for truck
+     *            <br> 'w' for warehouse
+     *            <br> 'p' for package
+     * @return
+     *         the id that the next object should be created with
+     */
+    public int getNextID(char idType);
 }
