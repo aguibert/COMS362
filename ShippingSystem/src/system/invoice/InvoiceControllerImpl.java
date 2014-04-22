@@ -62,7 +62,6 @@ public class InvoiceControllerImpl implements InvoiceController
 
     @Override
     public boolean deliverPackage(int pakcageID) {
-        // TODO Auto-generated method stub
-        return false;
+        return im.deliverPackage(pakcageID);
     }
 }

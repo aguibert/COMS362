@@ -3,7 +3,6 @@
  */
 package system;
 
-import system.invoice.Invoice;
 
 public interface SystemPackage {
 
@@ -23,7 +22,7 @@ public interface SystemPackage {
 
     public int getPackageID();
 
-    public Invoice getInvoice();
+    public int getInvoice();
 
     public boolean setLocation(String location);
 

@@ -97,7 +97,8 @@ public class CLI
                                + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "GET           <invoiceID>\n "
                                + "GETPACKAGE    <packageID>\n "
-                               + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
+                               + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
+                               + "DELIVER       <packageID>");
             return true;
         }
 
@@ -199,6 +200,22 @@ public class CLI
             else
                 for (Invoice i : iSet)
                     System.out.println("  " + i);
+            return true;
+        }
+
+        if ("deliver".equalsIgnoreCase(args[1])) {
+            // TODO need Jon to push his UI code for package arrival in order to test this
+            if (len != 3) {
+                System.out.println("DELIVER       <packageID>");
+                return false;
+            }
+
+            if (ic.deliverPackage(Integer.valueOf(args[2])) == false) {
+                System.out.println("Package " + Integer.valueOf(args[2]) + " was not found in database.");
+                return false;
+            }
+            else
+                return true;
         }
 
         return true;

@@ -9,6 +9,7 @@ import java.util.Set;
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
 import system.invoice.Invoice.INVOICE_STATE;
 
 /**
@@ -78,15 +79,20 @@ public class InvoiceManagerImpl implements InvoiceManager
         return new DatabaseSupportImpl().getInvoiceByState(state);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.invoice.InvoiceManager#deliverPackage(int)
-     */
     @Override
-    public boolean deliverPackage(int pakcageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean deliverPackage(int packageID) {
+        DatabaseSupport db = new DatabaseSupportImpl();
+        SystemPackage sp = db.getPackage(packageID);
+        if (sp == null)
+            return false;
+
+        Invoice i = db.getInvoice(sp.getInvoice());
+        if (i == null)
+            return false;
+
+        sp.setState(PACKAGE_STATE.DELIVERED);
+
+        return i.deliverPackage(packageID);
     }
 
 }

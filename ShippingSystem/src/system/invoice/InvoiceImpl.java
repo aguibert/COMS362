@@ -23,6 +23,7 @@ public class InvoiceImpl implements Invoice, Serializable
     private final String customerAddress;
     private final String customerPhone;
     private int numPackages;
+    private int deliveredPackages;
     private String description;
 
     private Set<Integer> packages = new HashSet<>();
@@ -37,6 +38,7 @@ public class InvoiceImpl implements Invoice, Serializable
         this.description = invoiceDescription;
 
         ivState = INVOICE_STATE.OPEN;
+        deliveredPackages = 0;
     }
 
     @Override
@@ -52,6 +54,8 @@ public class InvoiceImpl implements Invoice, Serializable
     public boolean setStatus(INVOICE_STATE newState) {
         if (newState != ivState)
             ivState = newState;
+        if (ivState == INVOICE_STATE.COMPLETE)
+            notifyCustomer("Your invoice " + ID + " containing " + numPackages + " packages is now completed.");
         return true;
     }
 
@@ -76,14 +80,22 @@ public class InvoiceImpl implements Invoice, Serializable
         return customerName;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.invoice.Invoice#deliverPackage(int)
-     */
     @Override
-    public boolean deliverPackage(int pakcageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean deliverPackage(int packageID) {
+        if (!packages.contains(packages))
+            return false;
+
+        deliveredPackages++;
+
+        if (deliveredPackages == numPackages)
+            setStatus(INVOICE_STATE.COMPLETE);
+
+        notifyCustomer("Package " + packageID + " has been sucessfully delivered to your location!");
+
+        return true;
+    }
+
+    private void notifyCustomer(String msg) {
+        System.out.println(" <<< System is notifying customer " + customerName + " with message:\n" + msg);
     }
 }
