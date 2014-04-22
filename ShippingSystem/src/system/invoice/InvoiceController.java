@@ -5,7 +5,7 @@ import java.util.List;
 import system.SystemPackage;
 
 public interface InvoiceController {
-
+    /** Iteration 1 **/
     public int createInvoice(String companyName, String customerName, String customerAddress, String customerPhone,
                              int numPackages, String invoiceDescription);
 
@@ -18,4 +18,6 @@ public interface InvoiceController {
     public Invoice getInvoice(int invoiceID);
 
     public SystemPackage getPackage(int packageID);
+
+    /** Iteration 2 **/
 }

@@ -10,6 +10,9 @@ import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.invoice.Invoice.INVOICE_STATE;
 
+/**
+ * @author Andrew
+ */
 public class InvoiceManagerImpl implements InvoiceManager
 {
     private static volatile InvoiceManagerImpl singleton = null;

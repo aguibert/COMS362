@@ -12,7 +12,6 @@ import system.SystemPackage;
 
 /**
  * @author Andrew
- * 
  */
 public class InvoiceImpl implements Invoice, Serializable
 {

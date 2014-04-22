@@ -28,7 +28,6 @@ import system.warehouse.Warehouse;
 
 /**
  * @author Andrew
- * 
  */
 public class DatabaseSupportImpl implements DatabaseSupport
 {

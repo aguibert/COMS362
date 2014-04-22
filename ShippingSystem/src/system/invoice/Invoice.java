@@ -5,12 +5,8 @@ package system.invoice;
 
 import system.SystemPackage;
 
-/**
- * @author Andrew
- * 
- */
 public interface Invoice {
-
+    /** Iteration 1 **/
     public enum INVOICE_STATE {
         OPEN,
         IN_PROGRESS,
@@ -30,4 +26,5 @@ public interface Invoice {
 
     public String getCustomerName();
 
+    /** Iteration 2 **/
 }

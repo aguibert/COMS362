@@ -7,12 +7,8 @@ import java.util.List;
 
 import system.SystemPackage;
 
-/**
- * @author Andrew
- * 
- */
 public interface Truck {
-
+    /** Iteration 1 **/
     public enum TRUCK_STATE {
         ALL_STATES,
         AVAILABLE,
@@ -40,4 +36,6 @@ public interface Truck {
     public boolean setState(TRUCK_STATE newState);
 
     public int getID();
+
+    /** Iteration 2 **/
 }

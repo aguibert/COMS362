@@ -7,6 +7,8 @@ import system.invoice.Invoice;
 
 public interface SystemPackage {
 
+    /** Iteration 1 **/
+
     public enum PACKAGE_STATE {
         WAREHOUSE,
         ON_TRUCK,
@@ -26,4 +28,6 @@ public interface SystemPackage {
     public boolean setLocation(String location);
 
     public String getLocation();
+
+    /** Iteration 2 **/
 }

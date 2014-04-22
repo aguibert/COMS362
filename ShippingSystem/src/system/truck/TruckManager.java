@@ -6,7 +6,7 @@ import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
 public interface TruckManager {
-
+    /** Iteration 1 **/
     public int createTruck();
 
     public Route createRoute(int truckID);
@@ -24,4 +24,6 @@ public interface TruckManager {
     public boolean setTruckState(int truckID, TRUCK_STATE newState);
 
     public Truck getTruck(int truckID);
+
+    /** Iteration 2 **/
 }

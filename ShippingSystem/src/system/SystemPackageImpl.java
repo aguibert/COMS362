@@ -7,7 +7,6 @@ import system.invoice.Invoice;
 
 /**
  * @author Jon
- * 
  */
 public class SystemPackageImpl implements SystemPackage {
 

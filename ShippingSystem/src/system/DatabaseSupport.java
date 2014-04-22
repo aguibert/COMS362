@@ -10,11 +10,9 @@ import system.truck.Truck;
 import system.truck.Truck.TRUCK_STATE;
 import system.warehouse.Warehouse;
 
-/**
- * @author Andrew
- * 
- */
-public interface DatabaseSupport {
+public interface DatabaseSupport
+{
+    /** Iteration 1 **/
     public boolean putTruck(Truck t);
 
     public Truck getTruck(int truckID);
@@ -47,4 +45,6 @@ public interface DatabaseSupport {
      *         the id that the next object should be created with
      */
     public int getNextID(char idType);
+
+    /** Iteration 2 **/
 }

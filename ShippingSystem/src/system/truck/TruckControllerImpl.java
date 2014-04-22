@@ -8,6 +8,9 @@ import java.util.List;
 import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
+/**
+ * @author Lucas
+ */
 public class TruckControllerImpl implements TruckController
 {
     TruckManager tm = TruckManagerImpl.getInstance();

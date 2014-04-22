@@ -9,7 +9,6 @@ import system.SystemPackage;
 
 /**
  * @author aguibert
- * 
  */
 public class InvoiceControllerImpl implements InvoiceController
 {

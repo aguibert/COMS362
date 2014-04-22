@@ -8,8 +8,7 @@ import system.DatabaseSupportImpl;
 import system.SystemPackage;
 
 /**
- * @author Andrew
- * 
+ * @author Jon
  */
 public class WarehouseManagerImpl implements WarehouseManager
 {
