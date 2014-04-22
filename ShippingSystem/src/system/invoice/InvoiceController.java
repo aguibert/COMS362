@@ -1,6 +1,7 @@
 package system.invoice;
 
 import java.util.List;
+import java.util.Set;
 
 import system.SystemPackage;
 
@@ -20,4 +21,17 @@ public interface InvoiceController {
     public SystemPackage getPackage(int packageID);
 
     /** Iteration 2 **/
+
+    /**
+     * Selects all invoices from invoice table and returns a set of
+     * invoices matching the state filter.
+     */
+    public Set<Invoice> getInvoiceByState(String state);
+
+    /**
+     * Employee provides package ID. Invoice associated with this package is selected
+     * and modified as necessary (such as invoice completed). If package is not on
+     * the truck, returns false.
+     */
+    public boolean deliverPackage(int pakcageID);
 }

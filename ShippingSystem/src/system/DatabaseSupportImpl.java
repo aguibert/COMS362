@@ -18,10 +18,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import system.invoice.Invoice;
+import system.invoice.Invoice.INVOICE_STATE;
 import system.truck.Truck;
 import system.truck.Truck.TRUCK_STATE;
 import system.warehouse.Warehouse;
@@ -200,6 +203,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 props.setProperty("nextInvoice", "1");
                 props.setProperty("nextTruck", "1");
                 props.setProperty("nextWarehouse", "1");
+                props.setProperty("nextPackage", "1");
             }
             props.store(os, null);
         } catch (IOException e) {
@@ -338,6 +342,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
                     curValue = Integer.valueOf(props.getProperty("nextWarehouse"));
                     props.setProperty("nextWarehouse", String.valueOf(curValue + 1));
                     break;
+                case 'p':
+                    curValue = Integer.valueOf(props.getProperty("nextPackage"));
+                    props.setProperty("nextPackage", String.valueOf(curValue + 1));
+                    break;
                 default:
                     throw new RuntimeException("Invalid id type: " + idType);
             }
@@ -355,5 +363,34 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
         // Should never get here
         return -1;
+    }
+
+    @Override
+    public Set<Invoice> getInvoiceByState(INVOICE_STATE state) {
+        Set<Invoice> toReturn = new HashSet<>();
+
+        if (state == null)
+            return toReturn;
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select * from " + INVOICE_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                Invoice i = (Invoice) ois.readObject();
+                if (state == i.getStatus())
+                    toReturn.add(i);
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return toReturn;
     }
 }

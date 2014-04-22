@@ -36,7 +36,7 @@ public class InvoiceImpl implements Invoice, Serializable
         this.numPackages = numPackages;
         this.description = invoiceDescription;
 
-        ivState = INVOICE_STATE.IN_PROGRESS;
+        ivState = INVOICE_STATE.OPEN;
     }
 
     @Override
@@ -74,5 +74,16 @@ public class InvoiceImpl implements Invoice, Serializable
     @Override
     public String getCustomerName() {
         return customerName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see system.invoice.Invoice#deliverPackage(int)
+     */
+    @Override
+    public boolean deliverPackage(int pakcageID) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

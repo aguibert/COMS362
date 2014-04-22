@@ -4,8 +4,10 @@
 package system.invoice;
 
 import java.util.List;
+import java.util.Set;
 
 import system.SystemPackage;
+import system.invoice.Invoice.INVOICE_STATE;
 
 /**
  * @author aguibert
@@ -42,5 +44,25 @@ public class InvoiceControllerImpl implements InvoiceController
     @Override
     public SystemPackage getPackage(int packageID) {
         return im.getPackage(packageID);
+    }
+
+    @Override
+    public Set<Invoice> getInvoiceByState(String stateStr) {
+        INVOICE_STATE state = null;
+
+        for (INVOICE_STATE curState : INVOICE_STATE.values())
+            if (curState.toString().equalsIgnoreCase(stateStr))
+                state = curState;
+
+        if (state == null)
+            return null;
+
+        return im.getInvoiceByState(state);
+    }
+
+    @Override
+    public boolean deliverPackage(int pakcageID) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

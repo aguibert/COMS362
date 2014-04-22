@@ -4,6 +4,7 @@
 package system.invoice;
 
 import java.util.List;
+import java.util.Set;
 
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
@@ -70,6 +71,22 @@ public class InvoiceManagerImpl implements InvoiceManager
     @Override
     public SystemPackage getPackage(int packageID) {
         return new DatabaseSupportImpl().getPackage(packageID);
+    }
+
+    @Override
+    public Set<Invoice> getInvoiceByState(INVOICE_STATE state) {
+        return new DatabaseSupportImpl().getInvoiceByState(state);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see system.invoice.InvoiceManager#deliverPackage(int)
+     */
+    @Override
+    public boolean deliverPackage(int pakcageID) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

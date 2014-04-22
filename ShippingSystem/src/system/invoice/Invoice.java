@@ -27,4 +27,11 @@ public interface Invoice {
     public String getCustomerName();
 
     /** Iteration 2 **/
+
+    /**
+     * Employee provides package ID. Invoice associated with this package is selected
+     * and modified as necessary (such as invoice completed). If package is not on
+     * the truck, returns false.
+     */
+    public boolean deliverPackage(int pakcageID);
 }

@@ -4,8 +4,10 @@
 package system;
 
 import java.util.List;
+import java.util.Set;
 
 import system.invoice.Invoice;
+import system.invoice.Invoice.INVOICE_STATE;
 import system.truck.Truck;
 import system.truck.Truck.TRUCK_STATE;
 import system.warehouse.Warehouse;
@@ -47,4 +49,10 @@ public interface DatabaseSupport
     public int getNextID(char idType);
 
     /** Iteration 2 **/
+
+    /**
+     * Selects all invoices from invoice table and returns a set of
+     * invoices matching the state filter.
+     */
+    public Set<Invoice> getInvoiceByState(INVOICE_STATE state);
 }
