@@ -12,10 +12,14 @@ import system.SystemPackage;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
+import system.warehouse.Warehouse;
+import system.warehouse.WarehouseController;
+import system.warehouse.WarehouseControllerImpl;
 
 public class CLI
 {
     private static InvoiceController ic = new InvoiceControllerImpl();
+    private static WarehouseController wc = new WarehouseControllerImpl();
     private static boolean exit = false;
 
     public static void main(String[] args)
@@ -45,7 +49,7 @@ public class CLI
             return doDB(args);
         }
         else if ("warehouse".equalsIgnoreCase(args[0])) {
-
+            return doWarehouse(args);
         }
         else if ("invoice".equalsIgnoreCase(args[0])) {
             return doInvoice(args);
@@ -83,6 +87,74 @@ public class CLI
                 System.out.println("Tables dropped successfully.");
         }
 
+        return true;
+    }
+
+    private static boolean doWarehouse(String[] args) {
+
+        int len = args.length;
+        if (len < 2 || "help".equalsIgnoreCase(args[1])) {
+            System.out.println("Invoice operations:\n "
+                               + "CREATE        <warehouseID>\n "
+                               + "GET           <warehouseID>\n "
+                               + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
+                               + "DEPARTURE     <warehouseID> <packageID>");
+            return true;
+        }
+
+        //createWarehouse
+        if ("create".equalsIgnoreCase(args[1])) {
+            if (len != 1) {
+                System.out.println("WAREHOUSE CREATE");
+                return false;
+            }
+
+            int id = wc.createWarehouse();
+            System.out.println("Created warehouse with id " + id);
+            return true;
+        }
+
+        //getWarehouse
+        if ("get".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("WAREHOUSE GET <warehouseID>");
+                return false;
+            }
+
+            Warehouse w = wc.getWarehouse(Integer.valueOf(args[2]));
+            if (w == null)
+                System.out.println("Warehouse " + args[2] + " not found in database.");
+            else
+                System.out.println(w.toString());
+            return true;
+        }
+
+        //packageArrival
+        if ("arrival".equalsIgnoreCase(args[1])) {
+            if (len != 8) {
+                System.out.println("WAREHOUSE ARRIVAL <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>");
+                return false;
+            }
+
+            SystemPackage p = wc.packageArrival(Integer.valueOf(args[2]), Integer.valueOf(args[3]), args[4], args[5], Double.valueOf(args[6]), Double.valueOf(args[7]));
+            System.out.println("Created package with id " + p.getPackageID() + " and added to warehouse " + Integer.valueOf(args[2]));
+            return true;
+        }
+
+        //packageDeparture
+        if ("departure".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("WAREHOUSE DEPARTURE <warehouseID> <packageID>");
+                return false;
+            }
+
+            if (wc.packageDeparture(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("pacakge " + Integer.valueOf(args[3]) + " removed from warehouse " + Integer.valueOf(args[2]));
+            }
+            else {
+                System.out.println("Unable to depart package " + Integer.valueOf(args[3] + " from warehouse " + Integer.valueOf(args[2])));
+            }
+        }
         return true;
     }
 

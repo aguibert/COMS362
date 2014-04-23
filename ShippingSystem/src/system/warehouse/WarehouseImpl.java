@@ -25,11 +25,6 @@ public class WarehouseImpl implements Warehouse, Serializable
         ID = _id;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.Warehouse#packageArrival(java.lang.String, java.lang.String, double, double)
-     */
     @Override
     public SystemPackage packageArrival(int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
         SystemPackage p = new SystemPackageImpl(ID, invoiceID, customerName, destinationAddress, weight, shippingCost, SystemPackage.PACKAGE_STATE.WAREHOUSE);
@@ -37,11 +32,6 @@ public class WarehouseImpl implements Warehouse, Serializable
         return p;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.Warehouse#packageDeparture(java.lang.String)
-     */
     @Override
     public boolean packageDeparture(int packageID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
@@ -54,21 +44,11 @@ public class WarehouseImpl implements Warehouse, Serializable
         return dbs.putPackage(p);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.Warehouse#getID()
-     */
     @Override
     public int getID() {
         return this.ID;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.Warehouse#getPackages()
-     */
     @Override
     public Set<Integer> getPackages() {
         return packages;
