@@ -13,7 +13,7 @@ import system.SystemPackage;
 import system.SystemPackageImpl;
 
 /**
- * @author Andrew
+ * @author Jon
  */
 public class WarehouseImpl implements Warehouse, Serializable
 {

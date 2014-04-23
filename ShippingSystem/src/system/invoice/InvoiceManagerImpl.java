@@ -4,9 +4,12 @@
 package system.invoice;
 
 import java.util.List;
+import java.util.Set;
 
+import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
 import system.invoice.Invoice.INVOICE_STATE;
 
 /**
@@ -14,8 +17,6 @@ import system.invoice.Invoice.INVOICE_STATE;
  */
 public class InvoiceManagerImpl implements InvoiceManager
 {
-    private int nextInvoiceID = 0;
-
     private static volatile InvoiceManagerImpl singleton = null;
 
     public static synchronized InvoiceManagerImpl getInstance() {
@@ -28,7 +29,11 @@ public class InvoiceManagerImpl implements InvoiceManager
 
     @Override
     public int createInvoice(String companyName, String customerName, String customerAddress, String customerPhone, int numPackages, String invoiceDescription) {
-        Invoice i = new InvoiceImpl(nextInvoiceID++, companyName, customerName, customerAddress, customerPhone, numPackages, invoiceDescription);
+        DatabaseSupport db = new DatabaseSupportImpl();
+
+        Invoice i = new InvoiceImpl(db.getNextID('i'), companyName, customerName, customerAddress, customerPhone, numPackages, invoiceDescription);
+
+        db.putInvoice(i);
 
         return i.getID();
     }
@@ -67,6 +72,27 @@ public class InvoiceManagerImpl implements InvoiceManager
     @Override
     public SystemPackage getPackage(int packageID) {
         return new DatabaseSupportImpl().getPackage(packageID);
+    }
+
+    @Override
+    public Set<Invoice> getInvoiceByState(INVOICE_STATE state) {
+        return new DatabaseSupportImpl().getInvoiceByState(state);
+    }
+
+    @Override
+    public boolean deliverPackage(int packageID) {
+        DatabaseSupport db = new DatabaseSupportImpl();
+        SystemPackage sp = db.getPackage(packageID);
+        if (sp == null)
+            return false;
+
+        Invoice i = db.getInvoice(sp.getInvoice());
+        if (i == null)
+            return false;
+
+        sp.setState(PACKAGE_STATE.DELIVERED);
+
+        return i.deliverPackage(packageID);
     }
 
 }

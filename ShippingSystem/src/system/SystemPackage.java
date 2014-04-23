@@ -3,9 +3,10 @@
  */
 package system;
 
-import system.invoice.Invoice;
 
 public interface SystemPackage {
+
+    /** Iteration 1 **/
 
     public enum PACKAGE_STATE {
         WAREHOUSE,
@@ -21,9 +22,11 @@ public interface SystemPackage {
 
     public int getPackageID();
 
-    public Invoice getInvoice();
+    public int getInvoice();
 
     public boolean setLocation(String location);
 
     public String getLocation();
+
+    /** Iteration 2 **/
 }

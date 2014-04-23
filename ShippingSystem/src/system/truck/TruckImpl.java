@@ -4,16 +4,25 @@
 package system.truck;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import system.DatabaseSupport;
+import system.DatabaseSupportImpl;
+import system.SystemPackage;
 
 /**
- * @author Andrew
- * 
+ * @author Lucas
  */
 public class TruckImpl implements Truck, Serializable {
 
     private static final long serialVersionUID = 6133248066153670641L;
     private final int ID;
+    private String location;
+    private Set<Integer> packages = new HashSet<>();
+    private TRUCK_STATE state;
 
     protected TruckImpl(int _id) {
         this.ID = _id;
@@ -26,8 +35,7 @@ public class TruckImpl implements Truck, Serializable {
      */
     @Override
     public String getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        return location;
     }
 
     /*
@@ -37,8 +45,8 @@ public class TruckImpl implements Truck, Serializable {
      */
     @Override
     public boolean setLocation(String location) {
-        // TODO Auto-generated method stub
-        return false;
+        this.location = location;
+        return true;
     }
 
     /*
@@ -69,9 +77,14 @@ public class TruckImpl implements Truck, Serializable {
      * @see system.truck.Truck#addPackage(java.lang.String)
      */
     @Override
-    public boolean addPackage(String packageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean addPackage(int packageID) {
+        for (Integer pkg : packages) {
+            if (pkg == packageID) { //check if package ID already exists
+                return false; //if exists return false
+            }
+        }
+        packages.add(packageID);
+        return true;
     }
 
     /*
@@ -80,9 +93,14 @@ public class TruckImpl implements Truck, Serializable {
      * @see system.truck.Truck#removePackage(java.lang.String)
      */
     @Override
-    public boolean removePackage(String packageID) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean removePackage(int packageID) {
+        for (Integer pkg : packages) {
+            if (pkg == packageID) {
+                packages.remove(pkg);
+                return true;
+            }
+        }
+        return false; //returns false if package not found
     }
 
     /*
@@ -91,9 +109,13 @@ public class TruckImpl implements Truck, Serializable {
      * @see system.truck.Truck#getPackages()
      */
     @Override
-    public List<String> getPackages() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<SystemPackage> getPackages() {
+        DatabaseSupport db = new DatabaseSupportImpl();
+        ArrayList<SystemPackage> pack = new ArrayList<>();
+        for (int pkg : packages) {
+            pack.add(db.getPackage(pkg));
+        }
+        return pack;
     }
 
     /*
@@ -103,8 +125,7 @@ public class TruckImpl implements Truck, Serializable {
      */
     @Override
     public TRUCK_STATE getState() {
-        // TODO Auto-generated method stub
-        return null;
+        return state;
     }
 
     /*
@@ -114,8 +135,8 @@ public class TruckImpl implements Truck, Serializable {
      */
     @Override
     public boolean setState(TRUCK_STATE newState) {
-        // TODO Auto-generated method stub
-        return false;
+        this.state = newState;
+        return true;
     }
 
     /*
