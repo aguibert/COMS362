@@ -104,7 +104,7 @@ public class CLI
 
         //createWarehouse
         if ("create".equalsIgnoreCase(args[1])) {
-            if (len != 1) {
+            if (len != 2) {
                 System.out.println("WAREHOUSE CREATE");
                 return false;
             }
