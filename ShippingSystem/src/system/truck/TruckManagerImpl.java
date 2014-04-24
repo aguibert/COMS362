@@ -15,8 +15,6 @@ import system.truck.Truck.TRUCK_STATE;
  */
 public class TruckManagerImpl implements TruckManager
 {
-    static int nextTruckID = 0;
-
     private static volatile TruckManagerImpl singleton = null;
 
     public static synchronized TruckManager getInstance() {
@@ -34,8 +32,11 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public int createTruck() {
-        Truck t = new TruckImpl(nextTruckID++);
-        return t.getID();
+        DatabaseSupport db = new DatabaseSupportImpl();
+        int tid = db.getNextID('t');
+        Truck t = new TruckImpl(tid);
+        new DatabaseSupportImpl().putTruck(t);
+        return tid;
     }
 
     /*
@@ -69,6 +70,8 @@ public class TruckManagerImpl implements TruckManager
     public List<SystemPackage> getPackagesOnTruck(int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
+        if (t == null)
+            return null;
         return t.getPackages();
     }
 
