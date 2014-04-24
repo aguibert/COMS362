@@ -6,6 +6,7 @@ package CommandLineInterface;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Set;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
@@ -261,7 +262,9 @@ public class CLI
                                + "GETCUSTOMER   <customerName>\n "
                                + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "GET           <invoiceID>\n "
-                               + "GETPACKAGE    <packageID>");
+                               + "GETPACKAGE    <packageID>\n "
+                               + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
+                               + "DELIVER       <packageID>");
             return true;
         }
 
@@ -347,6 +350,38 @@ public class CLI
             else
                 System.out.println(sp.toString());
             return true;
+        }
+
+        if ("queryState".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("INVOICE QUERYSTATE <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
+                return false;
+            }
+
+            Set<Invoice> iSet = ic.getInvoiceByState(args[2]);
+            if (iSet == null)
+                System.out.println("Please provide one of the valid invoice states: <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
+            else if (iSet.size() == 0)
+                System.out.println("No invoices matched state " + args[2]);
+            else
+                for (Invoice i : iSet)
+                    System.out.println("  " + i);
+            return true;
+        }
+
+        if ("deliver".equalsIgnoreCase(args[1])) {
+            // TODO need Jon to push his UI code for package arrival in order to test this
+            if (len != 3) {
+                System.out.println("DELIVER       <packageID>");
+                return false;
+            }
+
+            if (ic.deliverPackage(Integer.valueOf(args[2])) == false) {
+                System.out.println("Package " + Integer.valueOf(args[2]) + " was not found in database.");
+                return false;
+            }
+            else
+                return true;
         }
 
         return true;

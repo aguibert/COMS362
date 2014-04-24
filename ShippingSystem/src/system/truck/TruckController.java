@@ -5,7 +5,7 @@ import java.util.List;
 import system.SystemPackage;
 
 public interface TruckController {
-
+    /** Iteration 1 **/
     public int createTruck();
 
     public Route createRoute(int truckID);
@@ -23,4 +23,6 @@ public interface TruckController {
     public boolean setTruckState(int truckID, String string);
 
     public Truck getTruck(int truckID);
+
+    /** Iteration 2 **/
 }

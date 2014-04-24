@@ -5,6 +5,9 @@ package system.warehouse;
 
 import system.SystemPackage;
 
+/**
+ * @author Jon
+ */
 public class WarehouseControllerImpl implements WarehouseController
 {
     WarehouseManager wm = WarehouseManagerImpl.getInstance();

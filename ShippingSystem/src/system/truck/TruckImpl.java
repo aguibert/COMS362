@@ -14,8 +14,7 @@ import system.DatabaseSupportImpl;
 import system.SystemPackage;
 
 /**
- * @author Andrew
- * 
+ * @author Lucas
  */
 public class TruckImpl implements Truck, Serializable {
 
