@@ -5,6 +5,7 @@ package CommandLineInterface;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
@@ -13,7 +14,6 @@ import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
 import system.truck.Route;
 import system.truck.Truck;
-import system.truck.Truck.TRUCK_STATE;
 import system.truck.TruckController;
 import system.truck.TruckControllerImpl;
 
@@ -40,7 +40,7 @@ public class CLI
         }
     }
 
-    private static boolean processCommand(String cmd) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    private static boolean processCommand(String cmd)
     {
         String[] args = cmd.split(" ");
         if (cmd.trim().length() == 0 || args.length == 0) {
@@ -79,7 +79,7 @@ public class CLI
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private static boolean doTruck(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    private static boolean doTruck(String[] args) {
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
             System.out.println("Truck operations:\n"
@@ -142,11 +142,12 @@ public class CLI
             }
 
             System.out.println("Packages for Truck " + args[2]);
-            if (tc.getPackagesOnTruck(Integer.valueOf(args[2])) == null) {
+            List<SystemPackage> packs = tc.getPackagesOnTruck(Integer.valueOf(args[2]));
+            if (packs == null) {
                 System.out.println("No packages on truck");
                 return true;
             }
-            for (SystemPackage pack : tc.getPackagesOnTruck(Integer.valueOf(args[2]))) {
+            for (SystemPackage pack : packs) {
                 System.out.println("  " + pack.getPackageID());
             }
             return true;
@@ -191,9 +192,8 @@ public class CLI
                 return false;
             }
 
-            TRUCK_STATE state = (TRUCK_STATE) Class.forName(args[2]).newInstance();
             System.out.println("Trucks with state: " + args[2]);
-            for (Truck tr : tc.getTrucks(state)) {
+            for (Truck tr : tc.getTrucks(args[2])) {
                 System.out.println("  " + tr.getID());
             }
             return true;
@@ -206,8 +206,7 @@ public class CLI
                 return false;
             }
 
-            TRUCK_STATE newState = (TRUCK_STATE) Class.forName(args[2]).newInstance();
-            if (tc.setTruckState(Integer.valueOf(args[2]), newState)) {
+            if (tc.setTruckState(Integer.valueOf(args[2]), args[3])) {
                 System.out.println("Truck " + args[2] + " set to state " + args[3]);
             }
             else {
@@ -306,7 +305,7 @@ public class CLI
             return true;
         }
 
-        // addPakcageToInvoice
+        // addPackageToInvoice
         if ("addPackage".equalsIgnoreCase(args[1])) {
             if (len != 4) {
                 System.out.println("INVOICE ADDPACKAGE <invoiceID> <packageID>");

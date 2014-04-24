@@ -43,12 +43,30 @@ public class TruckControllerImpl implements TruckController
     }
 
     @Override
-    public List<Truck> getTrucks(TRUCK_STATE state) {
+    public List<Truck> getTrucks(String string) {
+        TRUCK_STATE state = null;
+        for (TRUCK_STATE currentState : TRUCK_STATE.values()) {
+            if (currentState.toString().equalsIgnoreCase(string)) {
+                state = currentState;
+            }
+        }
+        if (state == null) {
+            return null;
+        }
         return tm.getTrucks(state);
     }
 
     @Override
-    public boolean setTruckState(int truckID, TRUCK_STATE newState) {
+    public boolean setTruckState(int truckID, String string) {
+        TRUCK_STATE newState = null;
+        for (TRUCK_STATE currentState : TRUCK_STATE.values()) {
+            if (currentState.toString().equalsIgnoreCase(string)) {
+                newState = currentState;
+            }
+        }
+        if (newState == null) {
+            return false;
+        }
         return tm.setTruckState(truckID, newState);
     }
 

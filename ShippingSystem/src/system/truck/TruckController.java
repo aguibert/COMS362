@@ -3,7 +3,6 @@ package system.truck;
 import java.util.List;
 
 import system.SystemPackage;
-import system.truck.Truck.TRUCK_STATE;
 
 public interface TruckController {
 
@@ -19,9 +18,9 @@ public interface TruckController {
 
     public boolean removePackageFromTruck(int packageID, int truckID);
 
-    public List<Truck> getTrucks(TRUCK_STATE state);
+    public List<Truck> getTrucks(String string);
 
-    public boolean setTruckState(int truckID, TRUCK_STATE newState);
+    public boolean setTruckState(int truckID, String string);
 
     public Truck getTruck(int truckID);
 }
