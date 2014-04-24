@@ -11,8 +11,7 @@ import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
 
 /**
- * @author Andrew
- * 
+ * @author Lucas
  */
 public class TruckManagerImpl implements TruckManager
 {

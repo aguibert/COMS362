@@ -5,12 +5,8 @@ package system.invoice;
 
 import system.SystemPackage;
 
-/**
- * @author Andrew
- * 
- */
 public interface Invoice {
-
+    /** Iteration 1 **/
     public enum INVOICE_STATE {
         OPEN,
         IN_PROGRESS,
@@ -30,4 +26,12 @@ public interface Invoice {
 
     public String getCustomerName();
 
+    /** Iteration 2 **/
+
+    /**
+     * Employee provides package ID. Invoice associated with this package is selected
+     * and modified as necessary (such as invoice completed). If package is not on
+     * the truck, returns false.
+     */
+    public boolean deliverPackage(int pakcageID);
 }
