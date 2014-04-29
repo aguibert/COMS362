@@ -5,16 +5,20 @@ package CommandLineInterface;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Set;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
+import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
+import system.truck.Route;
+import system.truck.Truck;
 import system.truck.TruckController;
 import system.truck.TruckControllerImpl;
-import system.warehouse.Warehouse;
 
 public class CLI
 {
@@ -55,7 +59,7 @@ public class CLI
             return doInvoice(args);
         }
         else if ("truck".equalsIgnoreCase(args[0])) {
-
+            return doTruck(args);
         }
         else if ("help".equalsIgnoreCase(args[0])) {
             System.out.println("Basic operations:\n DB\n WAREHOUSE \n INVOICE\n TRUCK\n EXIT");
@@ -67,6 +71,166 @@ public class CLI
         }
         else {
             System.out.println("< Unrecognized command");
+        }
+        return true;
+    }
+
+    /**
+     * @param args
+     * @return
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    private static boolean doTruck(String[] args) {
+        int len = args.length;
+        if (len < 2 || "help".equalsIgnoreCase(args[1])) {
+            System.out.println("Truck operations:\n"
+                               + "CREATE                 \n"
+                               + "CREATEROUTE            <truckID>\n"
+                               + "REFRESHTRUCKROUTE      <truckID>\n"
+                               + "GETPACKAGESON          <truckID>\n"
+                               + "ADDPACKAGETO           <packageID> <truckID>\n"
+                               + "REMOVEPACKAGEFROM      <packageID> <truckID>\n"
+                               + "GETTRUCKS              <state>\n"
+                               + "SETTRUCKSTATE          <truckID> <newState>\n"
+                               + "GET                    <truckID>\n");
+            return true;
+        }
+
+        //create truck
+        if ("create".equalsIgnoreCase(args[1])) {
+            if (len != 2) {
+                System.out.println("TRUCK CREATE <>");
+                return false;
+            }
+
+            int id = tc.createTruck();
+            System.out.println("Created truck with id " + id);
+            return true;
+        }
+
+        //create route
+        if ("createroute".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("TRUCK CREATEROUTE <truckID>");
+                return false;
+            }
+
+            Route r = tc.createRoute(Integer.valueOf(args[2]));
+            System.out.println("Truck " + args[2] + " has route " + r);
+        }
+
+        //refresh truck route
+        if ("refreshtruckroute".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("TRUCK REFRESHTRUCKROUTE <truckID>");
+                return false;
+            }
+
+            if (tc.refreshTruckRoute(Integer.valueOf(args[2]))) {
+                System.out.println("Truck route refreshed for truck " + args[1]);
+            }
+            else {
+                System.out.println("Truck " + args[2] + " not found in database");
+            }
+            return true;
+        }
+
+        //get packages on truck
+        if ("getpackageson".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("TRUCK GETPACKAGESON <truckID>");
+                return false;
+            }
+
+            System.out.println("Packages for Truck " + args[2]);
+            List<SystemPackage> packs = tc.getPackagesOnTruck(Integer.valueOf(args[2]));
+            if (packs == null) {
+                System.out.println("No packages on truck");
+                return true;
+            }
+            for (SystemPackage pack : packs) {
+                System.out.println("  " + pack.getPackageID());
+            }
+            return true;
+        }
+
+        //add package to truck
+        if ("addpackageto".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("TRUCK ADDPACKAGEOTO <packageID> <truckID>");
+                return false;
+            }
+
+            if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Package " + args[2] + " added to truck " + args[3]);
+            }
+            else {
+                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
+            }
+            return true;
+        }
+
+        //remove package from truck
+        if ("removepackagefrom".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("TRUCK REMOVEPACKAGEFROM <packageID> <truckID>");
+                return false;
+            }
+
+            if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Package " + args[2] + " removed from truck " + args[3]);
+            }
+            else {
+                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
+            }
+            return true;
+        }
+
+        //get trucks
+        if ("gettrucks".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("TRUCK GETTRUCKS <state>");
+                return false;
+            }
+
+            System.out.println("Trucks with state: " + args[2]);
+            for (Truck tr : tc.getTrucks(args[2])) {
+                System.out.println("  " + tr.getID());
+            }
+            return true;
+        }
+
+        //set truck state
+        if ("settruckstate".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("TRUCK SETTRUCKSTATE <truckID> <newState>");
+                return false;
+            }
+
+            if (tc.setTruckState(Integer.valueOf(args[2]), args[3])) {
+                System.out.println("Truck " + args[2] + " set to state " + args[3]);
+            }
+            else {
+                System.out.println("Truck " + args[2] + " not found in database");
+            }
+        }
+
+        //get truck
+        if ("get".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("TRUCK GET <truckID>");
+                return false;
+            }
+
+            Truck tr = tc.getTruck(Integer.valueOf(args[2]));
+            if (tr == null) {
+                System.out.println("Truck " + args[2] + " not found in database");
+            }
+            else {
+                System.out.println(tr);
+            }
         }
         return true;
     }
@@ -85,6 +249,11 @@ public class CLI
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
                 System.out.println("Tables dropped successfully.");
+        }
+        // TODO remove this once warehouse manager creates pakcages
+        else if ("createPkg".equalsIgnoreCase(args[1])) {
+            SystemPackage sp = new SystemPackageImpl(0, 1, "cust", "dest", 1.0, 1.0, PACKAGE_STATE.WAREHOUSE);
+            new DatabaseSupportImpl().putPackage(sp);
         }
 
         return true;
@@ -214,7 +383,7 @@ public class CLI
             return true;
         }
 
-        // addPakcageToInvoice
+        // addPackageToInvoice
         if ("addPackage".equalsIgnoreCase(args[1])) {
             if (len != 4) {
                 System.out.println("INVOICE ADDPACKAGE <invoiceID> <packageID>");
@@ -243,7 +412,7 @@ public class CLI
             return true;
         }
 
-        // getPakcage
+        // getPackage
         if ("getPackage".equalsIgnoreCase(args[1])) {
             if (len != 3) {
                 System.out.println("INVOICE GETPACKAGE <packageID>");
