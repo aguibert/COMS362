@@ -14,7 +14,6 @@ tmp/
 local.properties
 .loadpath
 ShippingSystem/myDB
-ShippingSystem/*.properties
 
 # External tool builders
 .externalToolBuilders/

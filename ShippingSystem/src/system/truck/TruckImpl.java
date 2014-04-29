@@ -149,4 +149,9 @@ public class TruckImpl implements Truck, Serializable {
         return ID;
     }
 
+    @Override
+    public String toString() {
+        String string = "hey";
+        return string;
+    }
 }
