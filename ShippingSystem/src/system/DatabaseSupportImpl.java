@@ -41,7 +41,6 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private static final String INVOICE_TABLE = "invoice_TABLE";
     private static final String WAREHOUSE_TABLE = "warehouse_TABLE";
     private static final String PACKAGE_TABLE = "package_TABLE";
-    private static final String TRUCK_TO_PKG_TABLE = "truckToPackageTable";
     private static final String CREATE_TRUCK_TABLE = "CREATE TABLE " + TRUCK_TABLE +
                                                      "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_INVOICE_TABLE = "CREATE TABLE " + INVOICE_TABLE +
@@ -49,9 +48,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private static final String CREATE_WAREHOUSE_TABLE = "CREATE TABLE " + WAREHOUSE_TABLE +
                                                          "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_PACKAGE_TABLE = "CREATE TABLE " + PACKAGE_TABLE +
-                                                       "( id int NOT NULL,javaObject blob )";
-    private static final String CREATE_TRUCK_TO_PKG_TABLE = "CREATE TABLE " + TRUCK_TO_PKG_TABLE +
-                                                            "( pkg int NOT NULL PRIMARY KEY , truck int NOT NULL)";
+                                                       "( id int NOT NULL, invoice int, truck int, warehouse int, javaObject blob )";
 
     public DatabaseSupportImpl() {}
 
@@ -81,7 +78,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private Object getCommon(int id, String table) {
         Object o = null;
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + table + " where id=" + id);
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + table + " where id=" + id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
@@ -106,8 +103,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
         try (Connection conn = getConnection()) {
             Statement s = conn.createStatement();
             for (Integer sp : t.getPackages()) {
-                String update = "UPDATE " + TRUCK_TO_PKG_TABLE + " SET pkg=" + sp + ", truck=" + t.getID() + " WHERE pkg=" + sp;
-                s.executeUpdate(update);
+                String update = "UPDATE " + PACKAGE_TABLE + " SET truck=" + t.getID() + " WHERE id=" + sp;
+                if (s.executeUpdate(update) == 0) {
+                    System.out.println("Error: Package " + sp + " not found in database");
+                }
             }
             s.close();
         } catch (Exception e) {
@@ -126,9 +125,9 @@ public class DatabaseSupportImpl implements DatabaseSupport
             return null;
 
         try (Connection conn = getConnection()) {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT pkg FROM " + TRUCK_TO_PKG_TABLE + " WHERE truck=" + truckID);
+            ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE truck=" + truckID);
             while (rs.next()) {
-                t.addPackage(rs.getInt("pkg"));
+                t.addPackage(rs.getInt("id"));
             }
             rs.close();
         } catch (Exception e) {
@@ -226,14 +225,6 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 System.out.println("\n----------------------------\n");
             e.printStackTrace();
         }
-        try (Connection conn = getConnection()) {
-            conn.createStatement().execute(CREATE_TRUCK_TO_PKG_TABLE);
-        } catch (Exception e) {
-            caughtEx = true;
-            if (caughtEx)
-                System.out.println("\n----------------------------\n");
-            e.printStackTrace();
-        }
 
         // Create and initialize config file
         try (OutputStream os = new FileOutputStream("config.properties")) {
@@ -281,14 +272,6 @@ public class DatabaseSupportImpl implements DatabaseSupport
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + PACKAGE_TABLE); // Only run this once
-        } catch (Exception e) {
-            caughtEx = true;
-            if (caughtEx)
-                System.out.println("\n----------------------------\n");
-            e.printStackTrace();
-        }
-        try (Connection conn = getConnection()) {
-            conn.createStatement().execute("drop table " + TRUCK_TO_PKG_TABLE); // Only run this once
         } catch (Exception e) {
             caughtEx = true;
             if (caughtEx)
