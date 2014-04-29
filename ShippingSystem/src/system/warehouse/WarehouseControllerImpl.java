@@ -28,7 +28,7 @@ public class WarehouseControllerImpl implements WarehouseController
     }
 
     @Override
-    public Warehouse getWareHouse(int warehouseID) {
-        return wm.getWareHouse(warehouseID);
+    public Warehouse getWarehouse(int warehouseID) {
+        return wm.getWarehouse(warehouseID);
     }
 }

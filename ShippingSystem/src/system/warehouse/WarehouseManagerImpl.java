@@ -6,6 +6,8 @@ package system.warehouse;
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.invoice.InvoiceManager;
+import system.invoice.InvoiceManagerImpl;
 
 /**
  * @author Jon
@@ -24,50 +26,36 @@ public class WarehouseManagerImpl implements WarehouseManager
 
     private WarehouseManagerImpl() {}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.WarehouseManager#createWarehouse()
-     */
     @Override
     public int createWarehouse() {
-        Warehouse w = new WarehouseImpl(nextWarehouse++);
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = new WarehouseImpl(dbs.getNextID('w'));
+        dbs.putWareHouse(w);
         return w.getID();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.WarehouseManager#packageArrival(int, int, java.lang.String, java.lang.String, double, double)
-     */
     @Override
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
-        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
-        SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = dbs.getWareHouse(warehouseID);
+        if (w == null) {
+            return null;
+        }
+        SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         dbs.putPackage(p);
-        dbs.getInvoice(invoiceID).addPackage(p.getPackageID());
+        InvoiceManager im = InvoiceManagerImpl.getInstance();
+        im.addPackageToInvoice(p.getPackageID(), invoiceID);
         return p;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.WarehouseManager#packageDeparture(int, java.lang.String)
-     */
     @Override
     public boolean packageDeparture(int warehouseID, int packageID) {
         Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
         return w.packageDeparture(packageID);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.warehouse.WarehouseManager#getWareHouse(int)
-     */
     @Override
-    public Warehouse getWareHouse(int warehouseID) {
+    public Warehouse getWarehouse(int warehouseID) {
         return new DatabaseSupportImpl().getWareHouse(warehouseID);
     }
 
