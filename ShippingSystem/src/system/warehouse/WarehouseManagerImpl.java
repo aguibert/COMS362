@@ -36,8 +36,14 @@ public class WarehouseManagerImpl implements WarehouseManager
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Warehouse w = dbs.getWareHouse(warehouseID);
+        if (w == null) {
+            return null;
+        }
         SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         dbs.putPackage(p);
+        if (dbs.getInvoice(invoiceID) == null) {
+            return null;
+        }
         dbs.getInvoice(invoiceID).addPackage(p.getPackageID());
         return p;
     }
