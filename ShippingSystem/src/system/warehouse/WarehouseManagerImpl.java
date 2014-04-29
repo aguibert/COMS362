@@ -6,6 +6,8 @@ package system.warehouse;
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.invoice.InvoiceManager;
+import system.invoice.InvoiceManagerImpl;
 
 /**
  * @author Jon
@@ -41,10 +43,8 @@ public class WarehouseManagerImpl implements WarehouseManager
         }
         SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         dbs.putPackage(p);
-        if (dbs.getInvoice(invoiceID) == null) {
-            return null;
-        }
-        dbs.getInvoice(invoiceID).addPackage(p.getPackageID());
+        InvoiceManager im = InvoiceManagerImpl.getInstance();
+        im.addPackageToInvoice(p.getPackageID(), invoiceID);
         return p;
     }
 
