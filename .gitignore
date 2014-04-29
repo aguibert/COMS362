@@ -2,7 +2,6 @@
 ## Eclipse
 #################
 
-ShippingSystem/*.properties
 *.pydevproject
 .project
 .metadata
@@ -15,6 +14,7 @@ tmp/
 local.properties
 .loadpath
 ShippingSystem/myDB
+ShippingSystem/config.properties
 
 # External tool builders
 .externalToolBuilders/
