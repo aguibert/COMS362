@@ -26,15 +26,17 @@ public class WarehouseManagerImpl implements WarehouseManager
 
     @Override
     public int createWarehouse() {
-        Warehouse w = new WarehouseImpl(nextWarehouse++);
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = new WarehouseImpl(dbs.getNextID('w'));
+        dbs.putWareHouse(w);
         return w.getID();
     }
 
     @Override
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
-        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
-        SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = dbs.getWareHouse(warehouseID);
+        SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
         dbs.putPackage(p);
         dbs.getInvoice(invoiceID).addPackage(p.getPackageID());
         return p;

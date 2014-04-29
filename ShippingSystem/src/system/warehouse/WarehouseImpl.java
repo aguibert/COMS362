@@ -54,4 +54,10 @@ public class WarehouseImpl implements Warehouse, Serializable
         return packages;
     }
 
+    @Override
+    public String toString() {
+        String string = null;
+        string = "Warehouse:  " + ID + "\n  Packages:  " + packages.toString() + "\n  Trucks:  ";
+        return string;
+    }
 }
