@@ -9,10 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import system.DatabaseSupport;
-import system.DatabaseSupportImpl;
-import system.SystemPackage;
-
 /**
  * @author Lucas
  */
@@ -78,13 +74,7 @@ public class TruckImpl implements Truck, Serializable {
      */
     @Override
     public boolean addPackage(int packageID) {
-        for (Integer pkg : packages) {
-            if (pkg == packageID) { //check if package ID already exists
-                return false; //if exists return false
-            }
-        }
-        packages.add(packageID);
-        return true;
+        return packages.add(packageID);
     }
 
     /*
@@ -109,13 +99,8 @@ public class TruckImpl implements Truck, Serializable {
      * @see system.truck.Truck#getPackages()
      */
     @Override
-    public List<SystemPackage> getPackages() {
-        DatabaseSupport db = new DatabaseSupportImpl();
-        ArrayList<SystemPackage> pack = new ArrayList<>();
-        for (int pkg : packages) {
-            pack.add(db.getPackage(pkg));
-        }
-        return pack;
+    public List<Integer> getPackages() {
+        return new ArrayList<Integer>(this.packages);
     }
 
     /*
@@ -149,4 +134,9 @@ public class TruckImpl implements Truck, Serializable {
         return ID;
     }
 
+    @Override
+    public String toString() {
+        String string = "hey";
+        return string;
+    }
 }

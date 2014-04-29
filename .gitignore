@@ -14,7 +14,7 @@ tmp/
 local.properties
 .loadpath
 ShippingSystem/myDB
-ShippingSystem/*.properties
+ShippingSystem/config.properties
 
 # External tool builders
 .externalToolBuilders/
@@ -213,3 +213,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+ShippingSystem/config.properties

@@ -3,6 +3,7 @@
  */
 package system.truck;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import system.DatabaseSupport;
@@ -15,8 +16,6 @@ import system.truck.Truck.TRUCK_STATE;
  */
 public class TruckManagerImpl implements TruckManager
 {
-    static int nextTruckID = 0;
-
     private static volatile TruckManagerImpl singleton = null;
 
     public static synchronized TruckManager getInstance() {
@@ -34,8 +33,11 @@ public class TruckManagerImpl implements TruckManager
      */
     @Override
     public int createTruck() {
-        Truck t = new TruckImpl(nextTruckID++);
-        return t.getID();
+        DatabaseSupport db = new DatabaseSupportImpl();
+        int tid = db.getNextID('t');
+        Truck t = new TruckImpl(tid);
+        new DatabaseSupportImpl().putTruck(t);
+        return tid;
     }
 
     /*
@@ -69,7 +71,13 @@ public class TruckManagerImpl implements TruckManager
     public List<SystemPackage> getPackagesOnTruck(int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
-        return t.getPackages();
+        if (t == null)
+            return null;
+        List<SystemPackage> packs = new ArrayList<>();
+        for (int pkg : t.getPackages()) {
+            packs.add(db.getPackage(pkg));
+        }
+        return packs;
     }
 
     /*
@@ -84,7 +92,9 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        return t.addPackage(packageID);
+        if (t.addPackage(packageID) == false)
+            return false;
+        return db.putTruck(t);
     }
 
     /*

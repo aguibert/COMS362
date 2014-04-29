@@ -12,14 +12,14 @@ import system.SystemPackage;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
+import system.truck.TruckController;
+import system.truck.TruckControllerImpl;
 import system.warehouse.Warehouse;
-import system.warehouse.WarehouseController;
-import system.warehouse.WarehouseControllerImpl;
 
 public class CLI
 {
     private static InvoiceController ic = new InvoiceControllerImpl();
-    private static WarehouseController wc = new WarehouseControllerImpl();
+    private static TruckController tc = new TruckControllerImpl();
     private static boolean exit = false;
 
     public static void main(String[] args)

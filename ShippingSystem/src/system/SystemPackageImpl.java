@@ -3,11 +3,14 @@
  */
 package system;
 
+import java.io.Serializable;
+
 /**
  * @author Jon
  */
-public class SystemPackageImpl implements SystemPackage {
+public class SystemPackageImpl implements SystemPackage, Serializable {
 
+    private static final long serialVersionUID = -6805193908720493965L;
     final private int packageID;
     private int invoiceID;
     private int warehouseID;

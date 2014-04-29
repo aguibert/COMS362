@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private static final String CREATE_WAREHOUSE_TABLE = "CREATE TABLE " + WAREHOUSE_TABLE +
                                                          "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_PACKAGE_TABLE = "CREATE TABLE " + PACKAGE_TABLE +
-                                                       "( id int NOT NULL,javaObject blob )";
+                                                       "( id int NOT NULL, invoice int, truck int, warehouse int, javaObject blob )";
 
     public DatabaseSupportImpl() {}
 
@@ -77,7 +78,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private Object getCommon(int id, String table) {
         Object o = null;
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select * from " + table + " where id=" + id);
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + table + " where id=" + id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
@@ -98,13 +99,42 @@ public class DatabaseSupportImpl implements DatabaseSupport
     @Override
     public boolean putTruck(Truck t) {
 
+        // Store package values in the TRUCK_TO_PKG table for later reconstruction
+        try (Connection conn = getConnection()) {
+            Statement s = conn.createStatement();
+            for (Integer sp : t.getPackages()) {
+                String update = "UPDATE " + PACKAGE_TABLE + " SET truck=" + t.getID() + " WHERE id=" + sp;
+                if (s.executeUpdate(update) == 0) {
+                    System.out.println("Error: Package " + sp + " not found in database");
+                }
+            }
+            s.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
         return putCommon(t, TRUCK_TABLE, t.getID());
     }
 
     @Override
     public Truck getTruck(int truckID) {
 
-        return (Truck) getCommon(truckID, TRUCK_TABLE);
+        Truck t = (Truck) getCommon(truckID, TRUCK_TABLE);
+        if (t == null)
+            return null;
+
+        try (Connection conn = getConnection()) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE truck=" + truckID);
+            while (rs.next()) {
+                t.addPackage(rs.getInt("id"));
+            }
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return t;
     }
 
     @Override
