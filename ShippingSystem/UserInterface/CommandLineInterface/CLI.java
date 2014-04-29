@@ -10,6 +10,8 @@ import java.util.Set;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
+import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
@@ -247,6 +249,11 @@ public class CLI
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
                 System.out.println("Tables dropped successfully.");
+        }
+        // TODO remove this once warehouse manager creates pakcages
+        else if ("createPkg".equalsIgnoreCase(args[1])) {
+            SystemPackage sp = new SystemPackageImpl(0, 1, "cust", "dest", 1.0, 1.0, PACKAGE_STATE.WAREHOUSE);
+            new DatabaseSupportImpl().putPackage(sp);
         }
 
         return true;

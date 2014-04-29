@@ -5,8 +5,6 @@ package system.truck;
 
 import java.util.List;
 
-import system.SystemPackage;
-
 public interface Truck {
     /** Iteration 1 **/
     public enum TRUCK_STATE {
@@ -29,7 +27,7 @@ public interface Truck {
 
     public boolean removePackage(int packageID);
 
-    public List<SystemPackage> getPackages();
+    public List<Integer> getPackages();
 
     public TRUCK_STATE getState();
 

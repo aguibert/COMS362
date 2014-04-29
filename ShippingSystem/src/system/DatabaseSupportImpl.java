@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
     private static final String INVOICE_TABLE = "invoice_TABLE";
     private static final String WAREHOUSE_TABLE = "warehouse_TABLE";
     private static final String PACKAGE_TABLE = "package_TABLE";
+    private static final String TRUCK_TO_PKG_TABLE = "truckToPackageTable";
     private static final String CREATE_TRUCK_TABLE = "CREATE TABLE " + TRUCK_TABLE +
                                                      "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_INVOICE_TABLE = "CREATE TABLE " + INVOICE_TABLE +
@@ -48,6 +50,8 @@ public class DatabaseSupportImpl implements DatabaseSupport
                                                          "( id int NOT NULL, javaObject blob )";
     private static final String CREATE_PACKAGE_TABLE = "CREATE TABLE " + PACKAGE_TABLE +
                                                        "( id int NOT NULL,javaObject blob )";
+    private static final String CREATE_TRUCK_TO_PKG_TABLE = "CREATE TABLE " + TRUCK_TO_PKG_TABLE +
+                                                            "( pkg int NOT NULL PRIMARY KEY , truck int NOT NULL)";
 
     public DatabaseSupportImpl() {}
 
@@ -98,13 +102,40 @@ public class DatabaseSupportImpl implements DatabaseSupport
     @Override
     public boolean putTruck(Truck t) {
 
+        // Store package values in the TRUCK_TO_PKG table for later reconstruction
+        try (Connection conn = getConnection()) {
+            Statement s = conn.createStatement();
+            for (Integer sp : t.getPackages()) {
+                String update = "UPDATE " + TRUCK_TO_PKG_TABLE + " SET pkg=" + sp + ", truck=" + t.getID() + " WHERE pkg=" + sp;
+                s.executeUpdate(update);
+            }
+            s.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
         return putCommon(t, TRUCK_TABLE, t.getID());
     }
 
     @Override
     public Truck getTruck(int truckID) {
 
-        return (Truck) getCommon(truckID, TRUCK_TABLE);
+        Truck t = (Truck) getCommon(truckID, TRUCK_TABLE);
+        if (t == null)
+            return null;
+
+        try (Connection conn = getConnection()) {
+            ResultSet rs = conn.createStatement().executeQuery("SELECT pkg FROM " + TRUCK_TO_PKG_TABLE + " WHERE truck=" + truckID);
+            while (rs.next()) {
+                t.addPackage(rs.getInt("pkg"));
+            }
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return t;
     }
 
     @Override
@@ -195,6 +226,14 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 System.out.println("\n----------------------------\n");
             e.printStackTrace();
         }
+        try (Connection conn = getConnection()) {
+            conn.createStatement().execute(CREATE_TRUCK_TO_PKG_TABLE);
+        } catch (Exception e) {
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
+        }
 
         // Create and initialize config file
         try (OutputStream os = new FileOutputStream("config.properties")) {
@@ -242,6 +281,14 @@ public class DatabaseSupportImpl implements DatabaseSupport
         }
         try (Connection conn = getConnection()) {
             conn.createStatement().execute("drop table " + PACKAGE_TABLE); // Only run this once
+        } catch (Exception e) {
+            caughtEx = true;
+            if (caughtEx)
+                System.out.println("\n----------------------------\n");
+            e.printStackTrace();
+        }
+        try (Connection conn = getConnection()) {
+            conn.createStatement().execute("drop table " + TRUCK_TO_PKG_TABLE); // Only run this once
         } catch (Exception e) {
             caughtEx = true;
             if (caughtEx)

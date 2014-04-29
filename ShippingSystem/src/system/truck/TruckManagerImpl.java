@@ -3,6 +3,7 @@
  */
 package system.truck;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import system.DatabaseSupport;
@@ -72,7 +73,11 @@ public class TruckManagerImpl implements TruckManager
         Truck t = db.getTruck(truckID);
         if (t == null)
             return null;
-        return t.getPackages();
+        List<SystemPackage> packs = new ArrayList<>();
+        for (int pkg : t.getPackages()) {
+            packs.add(db.getPackage(pkg));
+        }
+        return packs;
     }
 
     /*
@@ -87,7 +92,9 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        return t.addPackage(packageID);
+        if (t.addPackage(packageID) == false)
+            return false;
+        return db.putTruck(t);
     }
 
     /*

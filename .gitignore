@@ -2,6 +2,7 @@
 ## Eclipse
 #################
 
+ShippingSystem/*.properties
 *.pydevproject
 .project
 .metadata
