@@ -15,7 +15,6 @@ import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
-import system.truck.Route;
 import system.truck.Truck;
 import system.truck.TruckController;
 import system.truck.TruckControllerImpl;
@@ -121,8 +120,9 @@ public class CLI
                 return false;
             }
 
-            Route r = tc.createRoute(Integer.valueOf(args[2]));
-            System.out.println("Truck " + args[2] + " has route " + r);
+            String str = tc.createRoute(Integer.valueOf(args[2]));
+            System.out.println("Truck " + args[2] + " has route " + str);
+            return true;
         }
 
         //refresh truck route
@@ -133,7 +133,7 @@ public class CLI
             }
 
             if (tc.refreshTruckRoute(Integer.valueOf(args[2]))) {
-                System.out.println("Truck route refreshed for truck " + args[1]);
+                System.out.println("Truck route refreshed for truck " + args[2]);
             }
             else {
                 System.out.println("Truck " + args[2] + " not found in database");
@@ -149,7 +149,6 @@ public class CLI
             }
 
             List<SystemPackage> packs = tc.getPackagesOnTruck(Integer.valueOf(args[2]));
-            System.out.println(packs);
             if (packs == null) {
                 System.out.println("Truck " + args[2] + " does not exist.");
                 return true;
@@ -182,11 +181,11 @@ public class CLI
                 return false;
             }
 
-            if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+            if (tc.removePackageFromTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package " + args[2] + " removed from truck " + args[3]);
             }
             else {
-                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
+                System.out.println("Package not found");
             }
             return true;
         }
@@ -216,8 +215,10 @@ public class CLI
                 System.out.println("Truck " + args[2] + " set to state " + args[3]);
             }
             else {
-                System.out.println("Truck " + args[2] + " not found in database");
+                System.out.println("Truck " + args[2] + " Error");
+                return false;
             }
+            return true;
         }
 
         //get truck

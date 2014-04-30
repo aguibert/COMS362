@@ -21,7 +21,7 @@ public class TruckControllerImpl implements TruckController
     }
 
     @Override
-    public Route createRoute(int truckID) {
+    public String createRoute(int truckID) {
         return tm.createRoute(truckID);
     }
 

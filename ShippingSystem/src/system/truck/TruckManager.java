@@ -9,7 +9,7 @@ public interface TruckManager {
     /** Iteration 1 **/
     public int createTruck();
 
-    public Route createRoute(int truckID);
+    public String createRoute(int truckID);
 
     public boolean refreshTruckRoute(int truckID);
 

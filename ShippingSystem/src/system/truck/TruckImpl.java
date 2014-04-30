@@ -26,13 +26,14 @@ public class TruckImpl implements Truck, Serializable {
     private String location;
     private Set<Integer> packages;
     private TRUCK_STATE state;
-    private ArrayList<Integer> route;
+    private String route;
 
     protected TruckImpl(int _id) {
         this.ID = _id;
         setState(TRUCK_STATE.AVAILABLE);
         packages = new HashSet<>();
         setLocation("Warehouse");
+        route = "";
     }
 
     @Override
@@ -47,21 +48,24 @@ public class TruckImpl implements Truck, Serializable {
     }
 
     @Override
-    public Route createTruckRoute() {
+    public String createTruckRoute() {
         Random rand = new Random();
-        int randomStops = rand.nextInt(1000);
-        int randomNumStops = rand.nextInt(21);
-        for (int i = 0; i < randomNumStops; i++) {
-            route.add(randomStops);
+        int randomStops, randomNumStops, i;
+        randomNumStops = rand.nextInt(21);
+        i = 0;
+        route = "";
+        while (i < randomNumStops) {
+            randomStops = rand.nextInt(1000);
+            route += (randomStops + " ");
+            i++;
         }
-        Route routeOBJ = (Route) route;
-        return routeOBJ;
+        return route;
     }
 
     @Override
-    public Route refreshTruckRoute() {
-        route.remove(0);
-        return null;
+    public boolean refreshTruckRoute() {
+        route = route.substring(route.indexOf(' '), route.length());
+        return true;
     }
 
     @Override
@@ -122,15 +126,7 @@ public class TruckImpl implements Truck, Serializable {
 
     @Override
     public String toString() {
-        String string = "Truck " + ID + ":\n" + " Location: " + location + "\n" + " Packages: ";
-//        for (int i = 0; i < packages.length; i++) {
-//            if (packages[i] != -1) {
-//                string = string.concat("\n " + Integer.toString(packages[i]));
-//            }
-//            if ((packages[0] == -1) && (i == 0)) {
-//                string = string.concat("No Packages");
-//            }
-//        }
+        String string = "Truck " + ID + ":\n" + " Location: " + location + "\n" + " Packages: " + packages.toString();
         string = string.concat("\n" + " State: " + state);
         return string;
     }

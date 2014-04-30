@@ -19,9 +19,9 @@ public interface Truck {
 
     public boolean setLocation(String location);
 
-    public Route createTruckRoute();
+    public String createTruckRoute();
 
-    public Route refreshTruckRoute();
+    public boolean refreshTruckRoute();
 
     public boolean addPackage(int packageID);
 
