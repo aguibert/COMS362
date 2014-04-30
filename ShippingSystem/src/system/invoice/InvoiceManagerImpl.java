@@ -9,8 +9,8 @@ import java.util.Set;
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
-import system.SystemPackage.PACKAGE_STATE;
 import system.invoice.Invoice.INVOICE_STATE;
+import system.truck.TruckManagerImpl;
 
 /**
  * @author Andrew
@@ -40,12 +40,16 @@ public class InvoiceManagerImpl implements InvoiceManager
 
     @Override
     public boolean cancelInvoice(int invoiceID) {
-        Invoice i = new DatabaseSupportImpl().getInvoice(invoiceID);
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Invoice i = dbs.getInvoice(invoiceID);
 
         if (i == null)
             return false;
 
-        return i.setStatus(INVOICE_STATE.CANCELLED);
+        if (i.setStatus(INVOICE_STATE.CANCELLED) == false)
+            return false;
+
+        return dbs.putInvoice(i);
     }
 
     @Override
@@ -55,13 +59,21 @@ public class InvoiceManagerImpl implements InvoiceManager
 
     @Override
     public boolean addPackageToInvoice(int packageID, int invoiceID) {
-
-        Invoice i = new DatabaseSupportImpl().getInvoice(invoiceID);
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Invoice i = dbs.getInvoice(invoiceID);
 
         if (i == null)
             return false;
 
-        return i.addPackage(packageID);
+        if (dbs.getPackage(packageID) == null) {
+            System.out.println("ERROR: Unable to add package " + packageID + " to invoice " + invoiceID + " because the package did not exist in the database.");
+            return false;
+        }
+
+        if (i.addPackage(packageID) == false)
+            return false;
+
+        return dbs.putInvoice(i);
     }
 
     @Override
@@ -80,19 +92,31 @@ public class InvoiceManagerImpl implements InvoiceManager
     }
 
     @Override
-    public boolean deliverPackage(int packageID) {
-        DatabaseSupport db = new DatabaseSupportImpl();
-        SystemPackage sp = db.getPackage(packageID);
+    public boolean deliverPackage(int packageID, int truckID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        SystemPackage sp = dbs.getPackage(packageID);
         if (sp == null)
             return false;
 
-        Invoice i = db.getInvoice(sp.getInvoice());
+        Invoice i = dbs.getInvoice(sp.getInvoice());
         if (i == null)
             return false;
 
-        sp.setState(PACKAGE_STATE.DELIVERED);
+        if (i.deliverPackage(packageID) == false)
+            return false;
 
-        return i.deliverPackage(packageID);
+        if (TruckManagerImpl.getInstance().removePackageFromTruck(packageID, truckID) == false)
+            return false;
+
+        if (dbs.putInvoice(i) == false)
+            return false;
+
+        notifyCustomer(i, "Package " + packageID + " has been sucessfully delivered to your location!");
+        return true;
+    }
+
+    private void notifyCustomer(Invoice i, String msg) {
+        System.out.println(" <<< System is notifying customer " + i.getCustomerName() + " with message:\n" + msg);
     }
 
 }

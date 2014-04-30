@@ -26,47 +26,27 @@ public class TruckManagerImpl implements TruckManager
 
     private TruckManagerImpl() {}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#createTruck()
-     */
     @Override
     public int createTruck() {
         DatabaseSupport db = new DatabaseSupportImpl();
         int tid = db.getNextID('t');
         Truck t = new TruckImpl(tid);
-        new DatabaseSupportImpl().putTruck(t);
+        db.putTruck(t);
         return tid;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#createRoute(int)
-     */
     @Override
     public Route createRoute(int truckID) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#refreshTruckRoute(int)
-     */
     @Override
     public boolean refreshTruckRoute(int truckID) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#getPackagesOnTruck(int)
-     */
     @Override
     public List<SystemPackage> getPackagesOnTruck(int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
@@ -80,11 +60,6 @@ public class TruckManagerImpl implements TruckManager
         return packs;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#addPackageToTruck(java.lang.String, int)
-     */
     @Override
     public boolean addPackageToTruck(int packageID, int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
@@ -92,16 +67,13 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        if (t.addPackage(packageID) == false)
+        if (t.addPackage(packageID) == false) {
+            System.out.println("Package is already on truck.");
             return false;
+        }
         return db.putTruck(t);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#removePackageFromTruck(java.lang.String, int)
-     */
     @Override
     public boolean removePackageFromTruck(int packageID, int truckID) {
         DatabaseSupport db = new DatabaseSupportImpl();
@@ -109,41 +81,34 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        return t.removePackage(packageID);
+
+        if (t.removePackage(packageID) == false)
+            return false;
+
+        return db.putTruck(t);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#getTrucks(system.truck.Truck.TRUCK_STATE)
-     */
     @Override
     public List<Truck> getTrucks(TRUCK_STATE state) {
         DatabaseSupport db = new DatabaseSupportImpl();
         return db.getTrucks(state);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#setTruckState(int, system.truck.Truck.TRUCK_STATE)
-     */
     @Override
     public boolean setTruckState(int truckID, TRUCK_STATE newState) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
-        return t.setState(newState);
+        if (t == null)
+            return false;
+
+        if (t.setState(newState) == false)
+            return false;
+
+        return db.putTruck(t);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.TruckManager#getTruck(int)
-     */
     @Override
     public Truck getTruck(int truckID) {
-        DatabaseSupport db = new DatabaseSupportImpl();
-        return db.getTruck(truckID);
+        return new DatabaseSupportImpl().getTruck(truckID);
     }
-
 }
