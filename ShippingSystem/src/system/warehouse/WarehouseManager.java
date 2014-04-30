@@ -10,7 +10,7 @@ public interface WarehouseManager {
 
     public boolean packageDeparture(int warehouseID, int packageID);
 
-    public Warehouse getWareHouse(int warehouseID);
+    public Warehouse getWarehouse(int warehouseID);
 
     /** Iteration 2 **/
 }
