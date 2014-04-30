@@ -10,6 +10,8 @@ import java.util.Set;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
+import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
@@ -17,11 +19,15 @@ import system.truck.Route;
 import system.truck.Truck;
 import system.truck.TruckController;
 import system.truck.TruckControllerImpl;
+import system.warehouse.Warehouse;
+import system.warehouse.WarehouseController;
+import system.warehouse.WarehouseControllerImpl;
 
 public class CLI
 {
     private static InvoiceController ic = new InvoiceControllerImpl();
     private static TruckController tc = new TruckControllerImpl();
+    private static WarehouseController wc = new WarehouseControllerImpl();
     private static boolean exit = false;
 
     public static void main(String[] args)
@@ -51,7 +57,7 @@ public class CLI
             return doDB(args);
         }
         else if ("warehouse".equalsIgnoreCase(args[0])) {
-
+            return doWarehouse(args);
         }
         else if ("invoice".equalsIgnoreCase(args[0])) {
             return doInvoice(args);
@@ -164,9 +170,6 @@ public class CLI
             if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package " + args[2] + " added to truck " + args[3]);
             }
-            else {
-                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
-            }
             return true;
         }
 
@@ -243,12 +246,93 @@ public class CLI
         if ("CREATE".equalsIgnoreCase(args[1])) {
             if (db.createTable())
                 System.out.println("Tables created successfully.");
+
+            if (len == 3 && "gen".equalsIgnoreCase(args[2])) {
+                System.out.println("Created warehouse: " + wc.createWarehouse());
+                System.out.println("Created truck: " + tc.createTruck());
+                System.out.println("Created invoice: " + ic.createInvoice("comp", "cust", "addr", "phone", 2, "desc"));
+                if (wc.packageArrival(1, 1, "cust", "dest", 1.0, 1.0) == null)
+                    return false;
+            }
         }
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
                 System.out.println("Tables dropped successfully.");
         }
+        // TODO remove this once warehouse manager creates pakcages
+        else if ("createPkg".equalsIgnoreCase(args[1])) {
+            SystemPackage sp = new SystemPackageImpl(0, 1, "cust", "dest", 1.0, 1.0, PACKAGE_STATE.WAREHOUSE);
+            new DatabaseSupportImpl().putPackage(sp);
+        }
 
+        return true;
+    }
+
+    private static boolean doWarehouse(String[] args) {
+
+        int len = args.length;
+        if (len < 2 || "help".equalsIgnoreCase(args[1])) {
+            System.out.println("Warehouse operations:\n "
+                               + "CREATE        <warehouseID>\n "
+                               + "GET           <warehouseID>\n "
+                               + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
+                               + "DEPARTURE     <warehouseID> <packageID>");
+            return true;
+        }
+
+        //createWarehouse
+        if ("create".equalsIgnoreCase(args[1])) {
+            if (len != 2) {
+                System.out.println("WAREHOUSE CREATE");
+                return false;
+            }
+
+            int id = wc.createWarehouse();
+            System.out.println("Created warehouse with id " + id);
+            return true;
+        }
+
+        //getWarehouse
+        if ("get".equalsIgnoreCase(args[1])) {
+            if (len != 3) {
+                System.out.println("WAREHOUSE GET <warehouseID>");
+                return false;
+            }
+
+            Warehouse w = wc.getWarehouse(Integer.valueOf(args[2]));
+            if (w == null)
+                System.out.println("Warehouse " + args[2] + " not found in database.");
+            else
+                System.out.println(w.toString());
+            return true;
+        }
+
+        //packageArrival
+        if ("arrival".equalsIgnoreCase(args[1])) {
+            if (len != 8) {
+                System.out.println("WAREHOUSE ARRIVAL <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>");
+                return false;
+            }
+
+            SystemPackage p = wc.packageArrival(Integer.valueOf(args[2]), Integer.valueOf(args[3]), args[4], args[5], Double.valueOf(args[6]), Double.valueOf(args[7]));
+            System.out.println("Created package with id " + p.getPackageID() + " and added to warehouse " + Integer.valueOf(args[2]));
+            return true;
+        }
+
+        //packageDeparture
+        if ("departure".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("WAREHOUSE DEPARTURE <warehouseID> <packageID>");
+                return false;
+            }
+
+            if (wc.packageDeparture(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("pacakge " + Integer.valueOf(args[3]) + " removed from warehouse " + Integer.valueOf(args[2]));
+            }
+            else {
+                System.out.println("Unable to depart package " + Integer.valueOf(args[3] + " from warehouse " + Integer.valueOf(args[2])));
+            }
+        }
         return true;
     }
 
@@ -264,7 +348,7 @@ public class CLI
                                + "GET           <invoiceID>\n "
                                + "GETPACKAGE    <packageID>\n "
                                + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID>");
+                               + "DELIVER       <packageID> <truckID>");
             return true;
         }
 
@@ -365,25 +449,24 @@ public class CLI
                 System.out.println("No invoices matched state " + args[2]);
             else
                 for (Invoice i : iSet)
-                    System.out.println("  " + i);
+                    System.out.println("  " + i.toString().replace("\n", "\n  "));
             return true;
         }
 
         if ("deliver".equalsIgnoreCase(args[1])) {
-            // TODO need Jon to push his UI code for package arrival in order to test this
-            if (len != 3) {
-                System.out.println("DELIVER       <packageID>");
+            if (len != 4) {
+                System.out.println("DELIVER       <packageID> <truckID>");
                 return false;
             }
 
-            if (ic.deliverPackage(Integer.valueOf(args[2])) == false) {
-                System.out.println("Package " + Integer.valueOf(args[2]) + " was not found in database.");
+            if (ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3])) == false) {
                 return false;
             }
             else
                 return true;
         }
 
-        return true;
+        System.out.println("Error: Unrecognized command.");
+        return false;
     }
 }

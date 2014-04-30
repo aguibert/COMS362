@@ -34,5 +34,5 @@ public interface InvoiceManager {
      * and modified as necessary (such as invoice completed). If package is not on
      * the truck, returns false.
      */
-    public boolean deliverPackage(int pakcageID);
+    public boolean deliverPackage(int pakcageID, int truckID);
 }

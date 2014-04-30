@@ -3,6 +3,8 @@
  */
 package system.invoice;
 
+import java.util.Set;
+
 import system.SystemPackage;
 
 public interface Invoice {
@@ -34,4 +36,6 @@ public interface Invoice {
      * the truck, returns false.
      */
     public boolean deliverPackage(int pakcageID);
+
+    public Set<Integer> getPackages();
 }
