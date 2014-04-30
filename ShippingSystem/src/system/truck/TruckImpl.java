@@ -7,11 +7,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
 
 /**
  * @author Lucas
@@ -19,131 +21,100 @@ import system.SystemPackage;
 public class TruckImpl implements Truck, Serializable {
 
     private static final long serialVersionUID = 6133248066153670641L;
+    private static final int MAX_PACKAGES = 100;
     private final int ID;
     private String location;
-    private Set<Integer> packages = new HashSet<>();
+    private Set<Integer> packages;
     private TRUCK_STATE state;
+    private ArrayList<Integer> route;
 
     protected TruckImpl(int _id) {
         this.ID = _id;
+        setState(TRUCK_STATE.AVAILABLE);
+        packages = new HashSet<>();
+        setLocation("Warehouse");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#getLocation()
-     */
     @Override
     public String getLocation() {
         return location;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#setLocation(java.lang.String)
-     */
     @Override
     public boolean setLocation(String location) {
         this.location = location;
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#createTruckRoute()
-     */
     @Override
     public Route createTruckRoute() {
-        // TODO Auto-generated method stub
-        return null;
+        Random rand = new Random();
+        int randomStops = rand.nextInt(1000);
+        int randomNumStops = rand.nextInt(21);
+        for (int i = 0; i < randomNumStops; i++) {
+            route.add(randomStops);
+        }
+        Route routeOBJ = (Route) route;
+        return routeOBJ;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#refreshTruckRoute()
-     */
     @Override
     public Route refreshTruckRoute() {
-        // TODO Auto-generated method stub
+        route.remove(0);
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#addPackage(java.lang.String)
-     */
     @Override
     public boolean addPackage(int packageID) {
-        for (Integer pkg : packages) {
-            if (pkg == packageID) { //check if package ID already exists
-                return false; //if exists return false
-            }
-        }
-        packages.add(packageID);
-        return true;
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        SystemPackage sp = dbs.getPackage(packageID);
+        if (sp == null)
+            return false;
+
+        if (sp.setState(PACKAGE_STATE.ON_TRUCK) == false)
+            return false;
+        if (sp.setTruck(this.ID) == false)
+            return false;
+
+        if (dbs.putPackage(sp) == false)
+            return false;
+
+        return packages.add(packageID);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#removePackage(java.lang.String)
-     */
     @Override
     public boolean removePackage(int packageID) {
-        for (Integer pkg : packages) {
-            if (pkg == packageID) {
-                packages.remove(pkg);
-                return true;
-            }
-        }
-        return false; //returns false if package not found
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        SystemPackage sp = dbs.getPackage(packageID);
+        if (sp == null)
+            return false;
+
+        // Set truck ID to -1 to indicate package is not on a truck
+        if (sp.setTruck(-1) == false)
+            return false;
+
+        if (dbs.putPackage(sp) == false)
+            return false;
+
+        return packages.remove(packageID); //returns false if package not found
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#getPackages()
-     */
     @Override
-    public List<SystemPackage> getPackages() {
-        DatabaseSupport db = new DatabaseSupportImpl();
-        ArrayList<SystemPackage> pack = new ArrayList<>();
-        for (int pkg : packages) {
-            pack.add(db.getPackage(pkg));
-        }
-        return pack;
+    public List<Integer> getPackages() {
+        return new ArrayList<Integer>(this.packages);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#getState()
-     */
     @Override
     public TRUCK_STATE getState() {
         return state;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#setState(system.truck.Truck.TRUCK_STATE)
-     */
     @Override
     public boolean setState(TRUCK_STATE newState) {
         this.state = newState;
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see system.truck.Truck#getID()
-     */
     @Override
     public int getID() {
         return ID;
@@ -151,7 +122,16 @@ public class TruckImpl implements Truck, Serializable {
 
     @Override
     public String toString() {
-        String string = "hey";
+        String string = "Truck " + ID + ":\n" + " Location: " + location + "\n" + " Packages: ";
+//        for (int i = 0; i < packages.length; i++) {
+//            if (packages[i] != -1) {
+//                string = string.concat("\n " + Integer.toString(packages[i]));
+//            }
+//            if ((packages[0] == -1) && (i == 0)) {
+//                string = string.concat("No Packages");
+//            }
+//        }
+        string = string.concat("\n" + " State: " + state);
         return string;
     }
 }
