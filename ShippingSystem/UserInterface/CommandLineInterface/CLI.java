@@ -170,9 +170,6 @@ public class CLI
             if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package " + args[2] + " added to truck " + args[3]);
             }
-            else {
-                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
-            }
             return true;
         }
 
@@ -249,6 +246,14 @@ public class CLI
         if ("CREATE".equalsIgnoreCase(args[1])) {
             if (db.createTable())
                 System.out.println("Tables created successfully.");
+
+            if (len == 3 && "gen".equalsIgnoreCase(args[2])) {
+                System.out.println("Created warehouse: " + wc.createWarehouse());
+                System.out.println("Created truck: " + tc.createTruck());
+                System.out.println("Created invoice: " + ic.createInvoice("comp", "cust", "addr", "phone", 2, "desc"));
+                if (wc.packageArrival(1, 1, "cust", "dest", 1.0, 1.0) == null)
+                    return false;
+            }
         }
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
@@ -267,7 +272,7 @@ public class CLI
 
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
-            System.out.println("Invoice operations:\n "
+            System.out.println("Warehouse operations:\n "
                                + "CREATE        <warehouseID>\n "
                                + "GET           <warehouseID>\n "
                                + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
@@ -343,7 +348,7 @@ public class CLI
                                + "GET           <invoiceID>\n "
                                + "GETPACKAGE    <packageID>\n "
                                + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID>");
+                               + "DELIVER       <packageID> <truckID>");
             return true;
         }
 
@@ -444,25 +449,24 @@ public class CLI
                 System.out.println("No invoices matched state " + args[2]);
             else
                 for (Invoice i : iSet)
-                    System.out.println("  " + i);
+                    System.out.println("  " + i.toString().replace("\n", "\n  "));
             return true;
         }
 
         if ("deliver".equalsIgnoreCase(args[1])) {
-            // TODO need Jon to push his UI code for package arrival in order to test this
-            if (len != 3) {
-                System.out.println("DELIVER       <packageID>");
+            if (len != 4) {
+                System.out.println("DELIVER       <packageID> <truckID>");
                 return false;
             }
 
-            if (ic.deliverPackage(Integer.valueOf(args[2])) == false) {
-                System.out.println("Package " + Integer.valueOf(args[2]) + " was not found in database.");
+            if (ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3])) == false) {
                 return false;
             }
             else
                 return true;
         }
 
-        return true;
+        System.out.println("Error: Unrecognized command.");
+        return false;
     }
 }

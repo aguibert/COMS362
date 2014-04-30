@@ -3,7 +3,6 @@
  */
 package system;
 
-
 public interface SystemPackage {
 
     /** Iteration 1 **/
@@ -29,4 +28,8 @@ public interface SystemPackage {
     public String getLocation();
 
     /** Iteration 2 **/
+
+    public int getTruck();
+
+    public boolean setTruck(int truckID);
 }

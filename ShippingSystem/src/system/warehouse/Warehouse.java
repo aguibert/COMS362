@@ -18,4 +18,5 @@ public interface Warehouse {
     public Set<Integer> getPackages();
 
     /** Iteration 2 **/
+    public boolean addPackage(int packageID);
 }

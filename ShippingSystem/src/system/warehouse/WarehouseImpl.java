@@ -28,7 +28,7 @@ public class WarehouseImpl implements Warehouse, Serializable
     @Override
     public SystemPackage packageArrival(int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost) {
         SystemPackage p = new SystemPackageImpl(ID, invoiceID, customerName, destinationAddress, weight, shippingCost, SystemPackage.PACKAGE_STATE.WAREHOUSE);
-        packages.add(p.getPackageID());
+        this.addPackage(p.getPackageID());
         return p;
     }
 
@@ -59,5 +59,10 @@ public class WarehouseImpl implements Warehouse, Serializable
         String string = null;
         string = "Warehouse:  " + ID + "\n  Packages:  " + packages.toString() + "\n  Trucks:  ";
         return string;
+    }
+
+    @Override
+    public boolean addPackage(int packageID) {
+        return packages.add(packageID);
     }
 }
