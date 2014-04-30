@@ -34,4 +34,6 @@ public interface InvoiceController {
      * the truck, returns false.
      */
     public boolean deliverPackage(int pakcageID, int truckID);
+
+    public boolean markDamaged(int packageID, int invoiceID);
 }

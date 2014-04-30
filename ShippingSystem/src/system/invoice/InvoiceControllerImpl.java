@@ -64,4 +64,9 @@ public class InvoiceControllerImpl implements InvoiceController
     public boolean deliverPackage(int pakcageID, int truckID) {
         return im.deliverPackage(pakcageID, truckID);
     }
+
+    @Override
+    public boolean markDamaged(int packageID, int invoiceID) {
+        return im.markDamaged(packageID, invoiceID);
+    }
 }

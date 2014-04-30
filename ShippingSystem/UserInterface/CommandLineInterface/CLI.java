@@ -348,7 +348,8 @@ public class CLI
                                + "GET           <invoiceID>\n "
                                + "GETPACKAGE    <packageID>\n "
                                + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID> <truckID>");
+                               + "DELIVER       <packageID> <truckID>\n"
+                               + "MARKDAMAGED   <packageID> <invoiceID>");
             return true;
         }
 
@@ -459,11 +460,20 @@ public class CLI
                 return false;
             }
 
-            if (ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3])) == false) {
+            return ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3]));
+        }
+
+        if ("markDamaged".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("MARKDAMAGED   <packageID> <invoiceID>");
                 return false;
             }
-            else
+
+            if (ic.markDamaged(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Package has been marked damaged.");
                 return true;
+            }
+            return false;
         }
 
         System.out.println("Error: Unrecognized command.");
