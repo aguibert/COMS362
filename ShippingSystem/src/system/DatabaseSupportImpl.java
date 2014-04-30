@@ -146,8 +146,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
     public Truck getTruck(int truckID) {
 
         Truck t = (Truck) getCommon(truckID, TRUCK_TABLE);
-        if (t == null)
+        if (t == null) {
+            System.out.println("ERROR: Truck " + truckID + " was not found in database.");
             return null;
+        }
 
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE truck=" + truckID);
@@ -188,6 +190,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
     public Invoice getInvoice(int invoiceID) {
 
         Invoice i = (Invoice) getCommon(invoiceID, INVOICE_TABLE);
+
+        if (i == null) {
+            System.out.println("ERROR: Invoice " + invoiceID + " was not found in database");
+            return null;
+        }
 
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE invoice=" + invoiceID);
@@ -230,6 +237,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
         Warehouse w = (Warehouse) getCommon(warehouseID, WAREHOUSE_TABLE);
 
+        if (w == null) {
+            System.out.println("ERROR: Warehouse " + warehouseID + " was not found in database.");
+            return null;
+        }
+
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE warehouse=" + warehouseID);
             while (rs.next()) {
@@ -267,7 +279,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
     @Override
     public SystemPackage getPackage(int packageID) {
 
-        return (SystemPackage) getCommon(packageID, PACKAGE_TABLE);
+        SystemPackage sp = (SystemPackage) getCommon(packageID, PACKAGE_TABLE);
+        if (sp == null) {
+            System.out.println("ERROR: Package " + packageID + " was not found in database.");
+        }
+        return sp;
     }
 
     private Connection getConnection() {
