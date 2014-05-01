@@ -1,5 +1,7 @@
 package system.warehouse;
 
+import java.util.Set;
+
 import system.SystemPackage;
 
 public interface WarehouseController {
@@ -13,4 +15,5 @@ public interface WarehouseController {
     public Warehouse getWarehouse(int warehouseID);
 
     /** Iteration 2 **/
+    public Set<Warehouse> getAll();
 }

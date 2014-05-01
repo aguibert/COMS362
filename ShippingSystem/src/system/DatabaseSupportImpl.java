@@ -419,8 +419,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Invoice i = (Invoice) ois.readObject();
-                if (i.getCustomerName() != null && i.getCustomerName().contains(customerName))
-                    toReturn.add(i);
+                if (i == null)
+                    continue;
+                if (i.getCustomerName() != null && i.getCustomerName().contains(customerName)) {
+                    toReturn.add(this.getInvoice(i.getID()));
+                }
 
                 ois.close();
                 bis.close();
@@ -449,8 +452,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Truck t = (Truck) ois.readObject();
+                if (t == null)
+                    continue;
                 if (state == TRUCK_STATE.ALL_STATES || state == t.getState())
-                    toReturn.add(t);
+                    toReturn.add(this.getTruck(t.getID()));
 
                 ois.close();
                 bis.close();
@@ -528,7 +533,60 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
                 Invoice i = (Invoice) ois.readObject();
                 if (state == i.getStatus())
-                    toReturn.add(i);
+                    toReturn.add(this.getInvoice(i.getID()));
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return toReturn;
+    }
+
+    @Override
+    public Set<SystemPackage> getAllPackages()
+    {
+        Set<SystemPackage> packs = new HashSet<>();
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + PACKAGE_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                SystemPackage sp = (SystemPackage) ois.readObject();
+                packs.add(sp);
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return packs;
+    }
+
+    @Override
+    public Set<Warehouse> getAllWarehouse() {
+        Set<Warehouse> toReturn = new HashSet<>();
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + WAREHOUSE_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                Warehouse w = (Warehouse) ois.readObject();
+                if (w == null)
+                    continue;
+                toReturn.add(this.getWareHouse(w.getID()));
 
                 ois.close();
                 bis.close();

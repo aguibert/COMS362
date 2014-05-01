@@ -19,4 +19,8 @@ public interface Warehouse {
 
     /** Iteration 2 **/
     public boolean addPackage(int packageID);
+
+    public void addTruck(int truckID);
+
+    public boolean removeTruck(int truckID);
 }

@@ -146,4 +146,25 @@ public class InvoiceManagerImpl implements InvoiceManager
         return true;
     }
 
+    @Override
+    public String getPkgLoc(int packageID, int invoiceID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+
+        SystemPackage sp = dbs.getPackage(packageID);
+        if (sp == null)
+            return null;
+
+        if (sp.getInvoice() != invoiceID) {
+            System.out.println("ERROR: Package " + packageID + " does not belong to invoice " + invoiceID + ".");
+            return null;
+        }
+
+        return sp.getLocation();
+    }
+
+    @Override
+    public Set<SystemPackage> getAllPackages() {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        return dbs.getAllPackages();
+    }
 }

@@ -55,4 +55,8 @@ public interface DatabaseSupport
      * invoices matching the state filter.
      */
     public Set<Invoice> getInvoiceByState(INVOICE_STATE state);
+
+    public Set<SystemPackage> getAllPackages();
+
+    public Set<Warehouse> getAllWarehouse();
 }
