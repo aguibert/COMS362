@@ -552,7 +552,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
         Set<SystemPackage> packs = new HashSet<>();
 
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("select javaObject from " + TRUCK_TABLE);
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + PACKAGE_TABLE);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));

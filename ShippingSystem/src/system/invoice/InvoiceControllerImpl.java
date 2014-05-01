@@ -74,4 +74,9 @@ public class InvoiceControllerImpl implements InvoiceController
     public String getPkgLoc(int packageID, int invoiceID) {
         return im.getPkgLoc(packageID, invoiceID);
     }
+
+    @Override
+    public Set<SystemPackage> getAllPackages() {
+        return im.getAllPackages();
+    }
 }

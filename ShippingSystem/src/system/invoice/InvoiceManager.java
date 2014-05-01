@@ -39,4 +39,6 @@ public interface InvoiceManager {
     public boolean markDamaged(int packageID, int invoiceID);
 
     public String getPkgLoc(int packageID, int invoiceID);
+
+    public Set<SystemPackage> getAllPackages();
 }

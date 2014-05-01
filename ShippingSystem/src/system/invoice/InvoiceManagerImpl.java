@@ -162,4 +162,9 @@ public class InvoiceManagerImpl implements InvoiceManager
         return sp.getLocation();
     }
 
+    @Override
+    public Set<SystemPackage> getAllPackages() {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        return dbs.getAllPackages();
+    }
 }
