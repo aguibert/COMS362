@@ -16,4 +16,6 @@ public interface WarehouseController {
 
     /** Iteration 2 **/
     public Set<Warehouse> getAll();
+
+    public boolean setLocation(int warehouseID, String newLocation);
 }

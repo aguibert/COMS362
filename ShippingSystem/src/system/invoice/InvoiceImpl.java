@@ -24,7 +24,6 @@ public class InvoiceImpl implements Invoice, Serializable
     private final String customerName;
     private final String customerAddress;
     private final String customerPhone;
-    private int numPackages;
     private int deliveredPackages;
     private String description;
 
@@ -36,7 +35,6 @@ public class InvoiceImpl implements Invoice, Serializable
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.customerPhone = customerPhone;
-        this.numPackages = numPackages;
         this.description = invoiceDescription;
 
         ivState = INVOICE_STATE.OPEN;
@@ -65,9 +63,6 @@ public class InvoiceImpl implements Invoice, Serializable
 
     @Override
     public boolean addPackage(int p) {
-        if (packages.size() + 1 > numPackages)
-            numPackages++;
-
         return packages.add(p);
     }
 
@@ -99,7 +94,7 @@ public class InvoiceImpl implements Invoice, Serializable
             return false;
 
         // Increment delivered counter of this invoice
-        if (deliveredPackages + 1 > numPackages) {
+        if (deliveredPackages + 1 > packages.size()) {
             System.out.println("ERROR: Delivered packages has exceeded number of packages for this invoice.");
             return false;
         }
@@ -109,7 +104,7 @@ public class InvoiceImpl implements Invoice, Serializable
             return false;
 
         // If all packages delivered, mark invoice COMPLETE
-        if (deliveredPackages == numPackages)
+        if (deliveredPackages == packages.size())
             return setStatus(INVOICE_STATE.COMPLETE);
 
         return true;
@@ -133,7 +128,7 @@ public class InvoiceImpl implements Invoice, Serializable
         sb.append("  Phone=");
         sb.append(this.customerPhone);
         sb.append("\n  Total/Delivered Packages (");
-        sb.append(numPackages);
+        sb.append(packages.size());
         sb.append('/');
         sb.append(deliveredPackages);
         sb.append(")\n  Packages: ");

@@ -44,9 +44,13 @@ public class WarehouseManagerImpl implements WarehouseManager
             return null;
         }
         SystemPackage p = w.packageArrival(invoiceID, customerName, destinationAddress, weight, shippingCost);
-        dbs.putPackage(p);
+        if (dbs.putPackage(p) == false)
+            return null;
         InvoiceManager im = InvoiceManagerImpl.getInstance();
         im.addPackageToInvoice(p.getPackageID(), invoiceID);
+        if (dbs.putWareHouse(w) == false)
+            return null;
+
         return p;
     }
 
@@ -91,5 +95,16 @@ public class WarehouseManagerImpl implements WarehouseManager
     @Override
     public Set<Warehouse> getAll() {
         return new DatabaseSupportImpl().getAllWarehouse();
+    }
+
+    @Override
+    public boolean setLocation(int warehouseID, String newLocation) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = dbs.getWareHouse(warehouseID);
+        if (w == null)
+            return false;
+        if (w.setLocation(newLocation) == false)
+            return false;
+        return dbs.putWareHouse(w);
     }
 }

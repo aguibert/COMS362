@@ -21,7 +21,6 @@ import system.SystemPackage.PACKAGE_STATE;
 public class TruckImpl implements Truck, Serializable {
 
     private static final long serialVersionUID = 6133248066153670641L;
-    private static final int MAX_PACKAGES = 100;
     private final int ID;
     private String location;
     private Set<Integer> packages;
@@ -63,9 +62,21 @@ public class TruckImpl implements Truck, Serializable {
     }
 
     @Override
-    public boolean refreshTruckRoute() {
-        route = route.substring(route.indexOf(' '), route.length());
-        return true;
+    public String refreshTruckRoute() {
+        String toReturn;
+        if (route == null || route.length() == 0) {
+            System.out.println("ERROR: No more destinations in this route.");
+            return null;
+        }
+        if (route.indexOf(' ') == -1) {
+            toReturn = route;
+            route = "";
+            return toReturn;
+        } else {
+            toReturn = route.substring(0, route.indexOf(' '));
+            route = route.substring(route.indexOf(' '), route.length());
+            return toReturn;
+        }
     }
 
     @Override
@@ -74,16 +85,14 @@ public class TruckImpl implements Truck, Serializable {
         SystemPackage sp = dbs.getPackage(packageID);
         if (sp == null)
             return false;
-
+        packages.add(packageID);
         if (sp.setState(PACKAGE_STATE.ON_TRUCK) == false)
             return false;
         if (sp.setTruck(this.ID) == false)
             return false;
-
         if (dbs.putPackage(sp) == false)
             return false;
-
-        return packages.add(packageID);
+        return true;
     }
 
     @Override
@@ -93,6 +102,12 @@ public class TruckImpl implements Truck, Serializable {
         if (sp == null)
             return false;
 
+        if (packages.remove(packageID) == false) {
+            //returns false if package not found
+            System.out.println("Package " + packageID + " is not on truck.");
+            return false;
+        }
+
         // Set truck ID to -1 to indicate package is not on a truck
         if (sp.setTruck(-1) == false)
             return false;
@@ -100,7 +115,7 @@ public class TruckImpl implements Truck, Serializable {
         if (dbs.putPackage(sp) == false)
             return false;
 
-        return packages.remove(packageID); //returns false if package not found
+        return true;
     }
 
     @Override

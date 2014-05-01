@@ -10,8 +10,6 @@ import java.util.Set;
 
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
-import system.SystemPackage.PACKAGE_STATE;
-import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
@@ -88,18 +86,19 @@ public class CLI
     private static boolean doTruck(String[] args) {
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
-            System.out.println("Truck operations:\n"
-                               + "CREATE                 \n"
-                               + "CREATEROUTE            <truckID>\n"
-                               + "REFRESHROUTE           <truckID>\n"
-                               + "GETPACKAGES            <truckID>\n"
-                               + "ADDPACKAGE             <packageID> <truckID>\n"
-                               + "REMOVEPACKAGE          <packageID> <truckID>\n"
-                               + "GETTRUCKS              <state>\n"
-                               + "SETSTATE               <truckID> <newState>\n"
-                               + "toWarehouse            <TruckID> <wareHouse>\n"
-                               + "releaseTruck           <TruckID> <warehouseID>\n"
-                               + "GET                    <truckID>\n");
+            System.out.println("Truck operations:\n "
+                               + "ADDPACKAGE      <packageID> <truckID>\n "
+                               + "CREATE          \n "
+                               + "CREATEROUTE     <truckID>\n "
+                               + "GET             <truckID>\n "
+                               + "GETPACKAGES     <truckID>\n "
+                               + "GETSTATE        <ALL_STATES|AVAILABLE|IN_ROUTE|BROKEN|LOADING>\n "
+                               + "REMOVEPACKAGE   <packageID> <truckID>\n "
+                               + "RELEASETRUCK    <truckID> <warehouseID>\n "
+                               + "REFRESHROUTE    <truckID>\n "
+                               + "SETSTATE        <truckID> <ALL_STATES|AVAILABLE|IN_ROUTE|BROKEN|LOADING>\n "
+                               + "TOWAREHOUSE     <truckID> <warehouse>"
+                            );
             return true;
         }
 
@@ -137,8 +136,9 @@ public class CLI
                 return false;
             }
 
-            if (tc.refreshTruckRoute(Integer.valueOf(args[2]))) {
-                System.out.println("Truck route refreshed for truck " + args[2]);
+            String nextStop = tc.refreshTruckRoute(Integer.valueOf(args[2]));
+            if (nextStop != null) {
+                System.out.println("Truck route refreshed for truck " + args[2] + ".  Next stop is " + nextStop);
                 return true;
             }
             else {
@@ -195,9 +195,9 @@ public class CLI
         }
 
         //get trucks
-        if ("gettrucks".equalsIgnoreCase(args[1])) {
+        if ("getState".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("TRUCK GETTRUCKS <state>");
+                System.out.println("TRUCK GETSTATE <ALL_STATES|AVAILABLE|IN_ROUTE|BROKEN|LOADING>");
                 return false;
             }
 
@@ -207,7 +207,7 @@ public class CLI
             }
             System.out.println("Trucks with state: " + args[2]);
             for (Truck tr : list) {
-                System.out.println("  " + tr.getID());
+                System.out.println("  id=" + tr.getID());
             }
             return true;
         }
@@ -215,7 +215,7 @@ public class CLI
         //set truck state
         if ("setstate".equalsIgnoreCase(args[1])) {
             if (len != 4) {
-                System.out.println("TRUCK SETSTATE <truckID> <newState>");
+                System.out.println("TRUCK SETSTATE <truckID> <ALL_STATES|AVAILABLE|IN_ROUTE|BROKEN|LOADING>");
                 return false;
             }
 
@@ -269,18 +269,14 @@ public class CLI
 
             Truck tr = tc.getTruck(Integer.valueOf(args[2]));
             if (tr == null) {
-                System.out.println("Truck " + args[2] + " not found in database");
+                return false;
             }
-            else {
-                System.out.println(tr);
-            }
+            System.out.println(tr);
+            return true;
         }
 
-        //invalid command
-        else {
-            System.out.println("Invalid Command");
-        }
-        return true;
+        System.out.println("Invalid Command");
+        return false;
     }
 
     private static boolean doDB(String[] args) {
@@ -306,14 +302,11 @@ public class CLI
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
                 System.out.println("Tables dropped successfully.");
-        }
-        // TODO remove this once warehouse manager creates pakcages
-        else if ("createPkg".equalsIgnoreCase(args[1])) {
-            SystemPackage sp = new SystemPackageImpl(0, 1, "cust", "dest", 1.0, 1.0, PACKAGE_STATE.WAREHOUSE);
-            new DatabaseSupportImpl().putPackage(sp);
+            return true;
         }
 
-        return true;
+        System.out.println("Invalid Command");
+        return false;
     }
 
     private static boolean doWarehouse(String[] args) {
@@ -321,11 +314,12 @@ public class CLI
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
             System.out.println("Warehouse operations:\n "
-                               + "CREATE        <warehouseID>\n "
-                               + "GET           <warehouseID>\n "
                                + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
+                               + "CREATE        <warehouseID>\n "
                                + "DEPARTURE     <warehouseID> <packageID>\n "
-                               + "GETALL");
+                               + "GET           <warehouseID>\n "
+                               + "GETALL\n "
+                               + "SETLOC        <warehouseID> <location>");
             return true;
         }
 
@@ -397,6 +391,18 @@ public class CLI
             return true;
         }
 
+        // Set location
+        if ("setLoc".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("SETLOC <warehouseID> <location>");
+                return false;
+            }
+            if (!wc.setLocation(Integer.valueOf(args[2]), args[3]))
+                return false;
+            System.out.println("Warehouse " + args[2] + " location has been udpated.");
+            return true;
+        }
+
         System.out.println("Unrecognized command.");
         return false;
     }
@@ -406,17 +412,18 @@ public class CLI
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
             System.out.println("Invoice operations:\n "
+                               + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "CREATE        <companyName> <customerName> <customerAddress> <customerPhone> <numPackages> <description>\n "
                                + "CANCEL        <invoiceID>\n "
-                               + "GETCUSTOMER   <customerName>\n "
-                               + "ADDPACKAGE    <invoiceID> <packageID>\n "
+                               + "DELIVER       <packageID> <truckID>\n "
                                + "GET           <invoiceID>\n "
                                + "GETPKG        <packageID>\n "
-                               + "GETSTATE      <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID> <truckID>\n "
-                               + "MARKDAMAGED   <packageID> <invoiceID>\n "
+                               + "GETALLPKG     \n "
                                + "GETPKGLOC     <packageID> <invoiceID>\n "
-                               + "GETALLPKG     ");
+                               + "GETCUSTOMER   <customerName>\n "
+                               + "GETSTATE      <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
+                               + "MARKDAMAGED   <packageID> <invoiceID>"
+                            );
             return true;
         }
 
@@ -505,7 +512,7 @@ public class CLI
         }
 
         // Get package by state
-        if ("queryState".equalsIgnoreCase(args[1])) {
+        if ("getState".equalsIgnoreCase(args[1])) {
             if (len != 3) {
                 System.out.println("INVOICE GETSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
                 return false;

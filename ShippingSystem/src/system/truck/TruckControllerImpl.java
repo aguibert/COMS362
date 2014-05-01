@@ -26,7 +26,7 @@ public class TruckControllerImpl implements TruckController
     }
 
     @Override
-    public boolean refreshTruckRoute(int truckID) {
+    public String refreshTruckRoute(int truckID) {
         return tm.refreshTruckRoute(truckID);
     }
 

@@ -20,6 +20,7 @@ public class WarehouseImpl implements Warehouse, Serializable
     private static final long serialVersionUID = 8153959552398319696L;
     public Set<Integer> packages = new HashSet<Integer>();
     public Set<Integer> trucks = new HashSet<Integer>();
+    public String location = "";
     private final int ID;
 
     public WarehouseImpl(int _id) {
@@ -58,7 +59,7 @@ public class WarehouseImpl implements Warehouse, Serializable
     @Override
     public String toString() {
         String string = null;
-        string = "Warehouse:  " + ID + "\n  Packages:  " + packages.toString() + "\n  Trucks:  " + trucks.toString();
+        string = "Warehouse:  " + ID + "\n  Location:  " + location + "\n  Packages:  " + packages + "\n  Trucks:  " + trucks;
         return string;
     }
 
@@ -79,5 +80,11 @@ public class WarehouseImpl implements Warehouse, Serializable
         }
         else
             return true;
+    }
+
+    @Override
+    public boolean setLocation(String newLocation) {
+        this.location = newLocation;
+        return true;
     }
 }

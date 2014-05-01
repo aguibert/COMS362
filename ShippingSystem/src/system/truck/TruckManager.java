@@ -11,7 +11,7 @@ public interface TruckManager {
 
     public String createRoute(int truckID);
 
-    public boolean refreshTruckRoute(int truckID);
+    public String refreshTruckRoute(int truckID);
 
     public List<SystemPackage> getPackagesOnTruck(int truckID);
 

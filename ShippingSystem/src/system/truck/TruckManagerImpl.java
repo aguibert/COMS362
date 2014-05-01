@@ -51,16 +51,17 @@ public class TruckManagerImpl implements TruckManager
     }
 
     @Override
-    public boolean refreshTruckRoute(int truckID) {
+    public String refreshTruckRoute(int truckID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Truck t = dbs.getTruck(truckID);
-        if (t == null) {
-            return false;
-        }
-        if (t.refreshTruckRoute() == false) {
-            return false;
-        }
-        return dbs.putTruck(t);
+        if (t == null)
+            return null;
+
+        String toReturn = t.refreshTruckRoute();
+        if (dbs.putTruck(t) == false)
+            return null;
+
+        return toReturn;
     }
 
     @Override

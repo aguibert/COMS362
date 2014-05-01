@@ -38,4 +38,9 @@ public class WarehouseControllerImpl implements WarehouseController
     public Set<Warehouse> getAll() {
         return wm.getAll();
     }
+
+    @Override
+    public boolean setLocation(int warehouseID, String newLocation) {
+        return wm.setLocation(warehouseID, newLocation);
+    }
 }

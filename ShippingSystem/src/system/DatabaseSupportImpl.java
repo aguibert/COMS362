@@ -532,8 +532,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Invoice i = (Invoice) ois.readObject();
-                if (state == i.getStatus())
-                    toReturn.add(this.getInvoice(i.getID()));
+                toReturn.add(i);
 
                 ois.close();
                 bis.close();
@@ -584,9 +583,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Warehouse w = (Warehouse) ois.readObject();
-                if (w == null)
-                    continue;
-                toReturn.add(this.getWareHouse(w.getID()));
+                toReturn.add(w);
 
                 ois.close();
                 bis.close();

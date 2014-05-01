@@ -22,4 +22,5 @@ public interface WarehouseManager {
 
     public Set<Warehouse> getAll();
 
+    public boolean setLocation(int warehouseID, String newLocation);
 }
