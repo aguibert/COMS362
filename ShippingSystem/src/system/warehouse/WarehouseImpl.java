@@ -19,6 +19,7 @@ public class WarehouseImpl implements Warehouse, Serializable
 {
     private static final long serialVersionUID = 8153959552398319696L;
     public Set<Integer> packages = new HashSet<Integer>();
+    public Set<Integer> trucks = new HashSet<Integer>();
     private final int ID;
 
     public WarehouseImpl(int _id) {
@@ -57,12 +58,26 @@ public class WarehouseImpl implements Warehouse, Serializable
     @Override
     public String toString() {
         String string = null;
-        string = "Warehouse:  " + ID + "\n  Packages:  " + packages.toString() + "\n  Trucks:  ";
+        string = "Warehouse:  " + ID + "\n  Packages:  " + packages.toString() + "\n  Trucks:  " + trucks.toString();
         return string;
     }
 
     @Override
     public boolean addPackage(int packageID) {
         return packages.add(packageID);
+    }
+
+    @Override
+    public void addTruck(int truckID) {
+        trucks.add(truckID);
+    }
+
+    @Override
+    public boolean removeTruck(int truckID) {
+        if (!trucks.contains(truckID)) {
+            return false;
+        }
+        else
+            return true;
     }
 }

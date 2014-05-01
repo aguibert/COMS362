@@ -15,5 +15,11 @@ public interface WarehouseManager {
     public Warehouse getWarehouse(int warehouseID);
 
     /** Iteration 2 **/
+
+    boolean addTruck(int truckID, int warehouseID);
+
+    boolean removeTruck(int truckID, int warehouseID);
+
     public Set<Warehouse> getAll();
+
 }
