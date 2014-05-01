@@ -1,5 +1,7 @@
 package system.warehouse;
 
+import java.util.Set;
+
 import system.SystemPackage;
 
 public interface WarehouseManager {
@@ -17,4 +19,7 @@ public interface WarehouseManager {
     boolean addTruck(int truckID, int warehouseID);
 
     boolean removeTruck(int truckID, int warehouseID);
+
+    public Set<Warehouse> getAll();
+
 }

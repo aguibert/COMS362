@@ -290,7 +290,8 @@ public class CLI
                                + "CREATE        <warehouseID>\n "
                                + "GET           <warehouseID>\n "
                                + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
-                               + "DEPARTURE     <warehouseID> <packageID>");
+                               + "DEPARTURE     <warehouseID> <packageID>\n "
+                               + "GETALL");
             return true;
         }
 
@@ -347,7 +348,23 @@ public class CLI
                 System.out.println("Unable to depart package " + Integer.valueOf(args[3] + " from warehouse " + Integer.valueOf(args[2])));
             }
         }
-        return true;
+
+        // Get all warehouses
+        if ("getAll".equalsIgnoreCase(args[1])) {
+            if (len != 2) {
+                System.out.println("WAREHOUSE GETALL");
+                return false;
+            }
+
+            Set<Warehouse> whs = wc.getAll();
+            for (Warehouse wh : whs)
+                System.out.println(wh);
+            System.out.println("System returned " + whs.size() + " warehouse(s).");
+            return true;
+        }
+
+        System.out.println("Unrecognized command.");
+        return false;
     }
 
     private static boolean doInvoice(String[] args) {
@@ -361,10 +378,11 @@ public class CLI
                                + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "GET           <invoiceID>\n "
                                + "GETPKG        <packageID>\n "
-                               + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
+                               + "GETSTATE      <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
                                + "DELIVER       <packageID> <truckID>\n "
                                + "MARKDAMAGED   <packageID> <invoiceID>\n "
-                               + "GETPKGLOC     <packageID> <invoiceID>");
+                               + "GETPKGLOC     <packageID> <invoiceID>\n "
+                               + "GETALLPKG     ");
             return true;
         }
 
@@ -455,7 +473,7 @@ public class CLI
         // Get package by state
         if ("queryState".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("INVOICE QUERYSTATE <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
+                System.out.println("INVOICE GETSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
                 return false;
             }
 
@@ -506,6 +524,19 @@ public class CLI
                 return true;
             }
             return false;
+        }
+
+        // Get all packages
+        if ("getAllPkg".equalsIgnoreCase(args[1])) {
+            if (len != 2) {
+                System.out.println("GETALLPKG");
+                return false;
+            }
+            Set<SystemPackage> packs = ic.getAllPackages();
+            for (SystemPackage sp : packs)
+                System.out.println(sp.toString());
+            System.out.println("System returned " + packs.size() + " package(s).");
+            return true;
         }
 
         System.out.println("Error: Unrecognized command.");
