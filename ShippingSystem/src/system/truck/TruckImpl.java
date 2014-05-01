@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import system.DatabaseSupport;
@@ -20,13 +21,19 @@ import system.SystemPackage.PACKAGE_STATE;
 public class TruckImpl implements Truck, Serializable {
 
     private static final long serialVersionUID = 6133248066153670641L;
+    private static final int MAX_PACKAGES = 100;
     private final int ID;
     private String location;
-    private Set<Integer> packages = new HashSet<>();
+    private Set<Integer> packages;
     private TRUCK_STATE state;
+    private String route;
 
     protected TruckImpl(int _id) {
         this.ID = _id;
+        setState(TRUCK_STATE.AVAILABLE);
+        packages = new HashSet<>();
+        setLocation("Warehouse");
+        route = "";
     }
 
     @Override
@@ -41,15 +48,24 @@ public class TruckImpl implements Truck, Serializable {
     }
 
     @Override
-    public Route createTruckRoute() {
-        // TODO Auto-generated method stub
-        return null;
+    public String createTruckRoute() {
+        Random rand = new Random();
+        int randomStops, randomNumStops, i;
+        randomNumStops = rand.nextInt(21);
+        i = 0;
+        route = "";
+        while (i < randomNumStops) {
+            randomStops = rand.nextInt(1000);
+            route += (randomStops + " ");
+            i++;
+        }
+        return route;
     }
 
     @Override
-    public Route refreshTruckRoute() {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean refreshTruckRoute() {
+        route = route.substring(route.indexOf(' '), route.length());
+        return true;
     }
 
     @Override
@@ -110,7 +126,8 @@ public class TruckImpl implements Truck, Serializable {
 
     @Override
     public String toString() {
-        String string = "hey";
+        String string = "Truck " + ID + ":\n" + " Location: " + location + "\n" + " Packages: " + packages.toString();
+        string = string.concat("\n" + " State: " + state);
         return string;
     }
 }

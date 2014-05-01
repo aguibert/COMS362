@@ -9,6 +9,7 @@ import java.util.Set;
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
+import system.SystemPackage.PACKAGE_STATE;
 import system.invoice.Invoice.INVOICE_STATE;
 import system.truck.TruckManagerImpl;
 
@@ -66,7 +67,6 @@ public class InvoiceManagerImpl implements InvoiceManager
             return false;
 
         if (dbs.getPackage(packageID) == null) {
-            System.out.println("ERROR: Unable to add package " + packageID + " to invoice " + invoiceID + " because the package did not exist in the database.");
             return false;
         }
 
@@ -117,6 +117,49 @@ public class InvoiceManagerImpl implements InvoiceManager
 
     private void notifyCustomer(Invoice i, String msg) {
         System.out.println(" <<< System is notifying customer " + i.getCustomerName() + " with message:\n" + msg);
+    }
+
+    @Override
+    public boolean markDamaged(int packageID, int invoiceID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Invoice i = dbs.getInvoice(invoiceID);
+        if (i == null)
+            return false;
+        SystemPackage sp = dbs.getPackage(packageID);
+        if (sp == null)
+            return false;
+
+        if (sp.setState(PACKAGE_STATE.DAMAGED) == false)
+            return false;
+
+        if (i.getStatus() == INVOICE_STATE.COMPLETE) {
+            if (i.setStatus(INVOICE_STATE.IN_PROGRESS) == false)
+                return false;
+            System.out.println("Packaged marked as damaged.  Re-opening closed invoice.");
+        }
+
+        if (dbs.putInvoice(i) == false)
+            return false;
+        if (dbs.putPackage(sp) == false)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public String getPkgLoc(int packageID, int invoiceID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+
+        SystemPackage sp = dbs.getPackage(packageID);
+        if (sp == null)
+            return null;
+
+        if (sp.getInvoice() != invoiceID) {
+            System.out.println("ERROR: Package " + packageID + " does not belong to invoice " + invoiceID + ".");
+            return null;
+        }
+
+        return sp.getLocation();
     }
 
 }

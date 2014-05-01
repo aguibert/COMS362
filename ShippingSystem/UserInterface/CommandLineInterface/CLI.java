@@ -15,7 +15,6 @@ import system.SystemPackageImpl;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
 import system.invoice.InvoiceControllerImpl;
-import system.truck.Route;
 import system.truck.Truck;
 import system.truck.TruckController;
 import system.truck.TruckControllerImpl;
@@ -92,12 +91,12 @@ public class CLI
             System.out.println("Truck operations:\n"
                                + "CREATE                 \n"
                                + "CREATEROUTE            <truckID>\n"
-                               + "REFRESHTRUCKROUTE      <truckID>\n"
-                               + "GETPACKAGESON          <truckID>\n"
-                               + "ADDPACKAGETO           <packageID> <truckID>\n"
-                               + "REMOVEPACKAGEFROM      <packageID> <truckID>\n"
+                               + "REFRESHROUTE           <truckID>\n"
+                               + "GETPACKAGES            <truckID>\n"
+                               + "ADDPACKAGE             <packageID> <truckID>\n"
+                               + "REMOVEPACKAGE          <packageID> <truckID>\n"
                                + "GETTRUCKS              <state>\n"
-                               + "SETTRUCKSTATE          <truckID> <newState>\n"
+                               + "SETSTATE               <truckID> <newState>\n"
                                + "GET                    <truckID>\n");
             return true;
         }
@@ -121,39 +120,43 @@ public class CLI
                 return false;
             }
 
-            Route r = tc.createRoute(Integer.valueOf(args[2]));
-            System.out.println("Truck " + args[2] + " has route " + r);
+            String str = tc.createRoute(Integer.valueOf(args[2]));
+            if (str == null) {
+                return false;
+            }
+            System.out.println("Truck " + args[2] + " has route " + str);
+            return true;
         }
 
         //refresh truck route
-        if ("refreshtruckroute".equalsIgnoreCase(args[1])) {
+        if ("refreshroute".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("TRUCK REFRESHTRUCKROUTE <truckID>");
+                System.out.println("TRUCK REFRESHROUTE <truckID>");
                 return false;
             }
 
             if (tc.refreshTruckRoute(Integer.valueOf(args[2]))) {
-                System.out.println("Truck route refreshed for truck " + args[1]);
+                System.out.println("Truck route refreshed for truck " + args[2]);
+                return true;
             }
             else {
-                System.out.println("Truck " + args[2] + " not found in database");
+                return false;
             }
-            return true;
         }
 
         //get packages on truck
-        if ("getpackageson".equalsIgnoreCase(args[1])) {
+        if ("getpackages".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("TRUCK GETPACKAGESON <truckID>");
+                System.out.println("TRUCK GETPACKAGES <truckID>");
                 return false;
             }
 
-            System.out.println("Packages for Truck " + args[2]);
             List<SystemPackage> packs = tc.getPackagesOnTruck(Integer.valueOf(args[2]));
             if (packs == null) {
-                System.out.println("No packages on truck");
-                return true;
+                return false;
             }
+            System.out.println("Truck " + args[2] + " has " + packs.size() + " packages.");
+
             for (SystemPackage pack : packs) {
                 System.out.println("  " + pack.getPackageID());
             }
@@ -161,9 +164,9 @@ public class CLI
         }
 
         //add package to truck
-        if ("addpackageto".equalsIgnoreCase(args[1])) {
+        if ("addpackage".equalsIgnoreCase(args[1])) {
             if (len != 4) {
-                System.out.println("TRUCK ADDPACKAGEOTO <packageID> <truckID>");
+                System.out.println("TRUCK ADDPACKAGE <packageID> <truckID>");
                 return false;
             }
 
@@ -174,19 +177,19 @@ public class CLI
         }
 
         //remove package from truck
-        if ("removepackagefrom".equalsIgnoreCase(args[1])) {
+        if ("removepackage".equalsIgnoreCase(args[1])) {
             if (len != 4) {
-                System.out.println("TRUCK REMOVEPACKAGEFROM <packageID> <truckID>");
+                System.out.println("TRUCK REMOVEPACKAGE <packageID> <truckID>");
                 return false;
             }
 
-            if (tc.addPackageToTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+            if (tc.removePackageFromTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package " + args[2] + " removed from truck " + args[3]);
+                return true;
             }
             else {
-                System.out.println("Package not found"); //should I clarify if package not found or truck not found?
+                return false;
             }
-            return true;
         }
 
         //get trucks
@@ -196,25 +199,30 @@ public class CLI
                 return false;
             }
 
+            List<Truck> list = tc.getTrucks(args[2]);
+            if (list == null) {
+                return false;
+            }
             System.out.println("Trucks with state: " + args[2]);
-            for (Truck tr : tc.getTrucks(args[2])) {
+            for (Truck tr : list) {
                 System.out.println("  " + tr.getID());
             }
             return true;
         }
 
         //set truck state
-        if ("settruckstate".equalsIgnoreCase(args[1])) {
+        if ("setstate".equalsIgnoreCase(args[1])) {
             if (len != 4) {
-                System.out.println("TRUCK SETTRUCKSTATE <truckID> <newState>");
+                System.out.println("TRUCK SETSTATE <truckID> <newState>");
                 return false;
             }
 
             if (tc.setTruckState(Integer.valueOf(args[2]), args[3])) {
                 System.out.println("Truck " + args[2] + " set to state " + args[3]);
+                return true;
             }
             else {
-                System.out.println("Truck " + args[2] + " not found in database");
+                return false;
             }
         }
 
@@ -233,6 +241,11 @@ public class CLI
                 System.out.println(tr);
             }
         }
+
+        //invalid command
+        else {
+            System.out.println("Invalid Command");
+        }
         return true;
     }
 
@@ -240,6 +253,7 @@ public class CLI
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
             System.out.println("Database operations:\n CREATE\n DROP");
+            return false;
         }
 
         DatabaseSupportImpl db = new DatabaseSupportImpl();
@@ -346,9 +360,11 @@ public class CLI
                                + "GETCUSTOMER   <customerName>\n "
                                + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "GET           <invoiceID>\n "
-                               + "GETPACKAGE    <packageID>\n "
+                               + "GETPKG        <packageID>\n "
                                + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID> <truckID>");
+                               + "DELIVER       <packageID> <truckID>\n "
+                               + "MARKDAMAGED   <packageID> <invoiceID>\n "
+                               + "GETPKGLOC     <packageID> <invoiceID>");
             return true;
         }
 
@@ -422,9 +438,9 @@ public class CLI
         }
 
         // getPackage
-        if ("getPackage".equalsIgnoreCase(args[1])) {
+        if ("getPkg".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("INVOICE GETPACKAGE <packageID>");
+                System.out.println("INVOICE GETPKG <packageID>");
                 return false;
             }
 
@@ -436,6 +452,7 @@ public class CLI
             return true;
         }
 
+        // Get package by state
         if ("queryState".equalsIgnoreCase(args[1])) {
             if (len != 3) {
                 System.out.println("INVOICE QUERYSTATE <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
@@ -453,17 +470,42 @@ public class CLI
             return true;
         }
 
+        // Deliver package (and mark closed if necessary)
         if ("deliver".equalsIgnoreCase(args[1])) {
             if (len != 4) {
                 System.out.println("DELIVER       <packageID> <truckID>");
                 return false;
             }
 
-            if (ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3])) == false) {
+            return ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3]));
+        }
+
+        // Mark a package damaged (invoice re-opened if previously completed)
+        if ("markDamaged".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("MARKDAMAGED   <packageID> <invoiceID>");
                 return false;
             }
-            else
+
+            if (ic.markDamaged(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Package has been marked damaged.");
                 return true;
+            }
+            return false;
+        }
+
+        // Query package by location
+        if ("getPkgLoc".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("GETPKGLOC     <packageID> <invoiceID>");
+                return false;
+            }
+            String loc = ic.getPkgLoc(Integer.valueOf(args[2]), Integer.valueOf(args[3]));
+            if (loc != null) {
+                System.out.println("Package has location: " + loc);
+                return true;
+            }
+            return false;
         }
 
         System.out.println("Error: Unrecognized command.");

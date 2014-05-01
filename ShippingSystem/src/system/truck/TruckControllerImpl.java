@@ -21,7 +21,7 @@ public class TruckControllerImpl implements TruckController
     }
 
     @Override
-    public Route createRoute(int truckID) {
+    public String createRoute(int truckID) {
         return tm.createRoute(truckID);
     }
 
@@ -54,6 +54,7 @@ public class TruckControllerImpl implements TruckController
             }
         }
         if (state == null) {
+            System.out.println("Not an acceptable state.");
             return null;
         }
         return tm.getTrucks(state);
@@ -68,6 +69,7 @@ public class TruckControllerImpl implements TruckController
             }
         }
         if (newState == null) {
+            System.out.println("Not an acceptable state.");
             return false;
         }
         return tm.setTruckState(truckID, newState);

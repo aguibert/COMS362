@@ -146,8 +146,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
     public Truck getTruck(int truckID) {
 
         Truck t = (Truck) getCommon(truckID, TRUCK_TABLE);
-        if (t == null)
+        if (t == null) {
+            System.out.println("ERROR: Truck " + truckID + " was not found in database.");
             return null;
+        }
 
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE truck=" + truckID);
@@ -188,6 +190,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
     public Invoice getInvoice(int invoiceID) {
 
         Invoice i = (Invoice) getCommon(invoiceID, INVOICE_TABLE);
+
+        if (i == null) {
+            System.out.println("ERROR: Invoice " + invoiceID + " was not found in database");
+            return null;
+        }
 
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE invoice=" + invoiceID);
@@ -230,6 +237,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
         Warehouse w = (Warehouse) getCommon(warehouseID, WAREHOUSE_TABLE);
 
+        if (w == null) {
+            System.out.println("ERROR: Warehouse " + warehouseID + " was not found in database.");
+            return null;
+        }
+
         try (Connection conn = getConnection()) {
             ResultSet rs = conn.createStatement().executeQuery("SELECT id FROM " + PACKAGE_TABLE + " WHERE warehouse=" + warehouseID);
             while (rs.next()) {
@@ -267,7 +279,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
     @Override
     public SystemPackage getPackage(int packageID) {
 
-        return (SystemPackage) getCommon(packageID, PACKAGE_TABLE);
+        SystemPackage sp = (SystemPackage) getCommon(packageID, PACKAGE_TABLE);
+        if (sp == null) {
+            System.out.println("ERROR: Package " + packageID + " was not found in database.");
+        }
+        return sp;
     }
 
     private Connection getConnection() {
@@ -403,8 +419,11 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Invoice i = (Invoice) ois.readObject();
-                if (i.getCustomerName() != null && i.getCustomerName().contains(customerName))
-                    toReturn.add(i);
+                if (i == null)
+                    continue;
+                if (i.getCustomerName() != null && i.getCustomerName().contains(customerName)) {
+                    toReturn.add(this.getInvoice(i.getID()));
+                }
 
                 ois.close();
                 bis.close();
@@ -433,8 +452,10 @@ public class DatabaseSupportImpl implements DatabaseSupport
                 ObjectInputStream ois = new ObjectInputStream(bis);
 
                 Truck t = (Truck) ois.readObject();
+                if (t == null)
+                    continue;
                 if (state == TRUCK_STATE.ALL_STATES || state == t.getState())
-                    toReturn.add(t);
+                    toReturn.add(this.getTruck(t.getID()));
 
                 ois.close();
                 bis.close();
@@ -512,7 +533,7 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
                 Invoice i = (Invoice) ois.readObject();
                 if (state == i.getStatus())
-                    toReturn.add(i);
+                    toReturn.add(this.getInvoice(i.getID()));
 
                 ois.close();
                 bis.close();
@@ -523,5 +544,31 @@ public class DatabaseSupportImpl implements DatabaseSupport
         }
 
         return toReturn;
+    }
+
+    @Override
+    public Set<SystemPackage> getAllPackages()
+    {
+        Set<SystemPackage> packs = new HashSet<>();
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + TRUCK_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                SystemPackage sp = (SystemPackage) ois.readObject();
+                packs.add(sp);
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return packs;
     }
 }

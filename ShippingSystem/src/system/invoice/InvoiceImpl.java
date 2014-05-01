@@ -65,6 +65,9 @@ public class InvoiceImpl implements Invoice, Serializable
 
     @Override
     public boolean addPackage(int p) {
+        if (packages.size() + 1 > numPackages)
+            numPackages++;
+
         return packages.add(p);
     }
 
@@ -138,5 +141,16 @@ public class InvoiceImpl implements Invoice, Serializable
         sb.append("\n  Description: ");
         sb.append(this.description);
         return sb.toString();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see system.invoice.Invoice#markDamaged()
+     */
+    @Override
+    public boolean markDamaged() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

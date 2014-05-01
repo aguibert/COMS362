@@ -38,4 +38,6 @@ public interface Invoice {
     public boolean deliverPackage(int pakcageID);
 
     public Set<Integer> getPackages();
+
+    public boolean markDamaged();
 }
