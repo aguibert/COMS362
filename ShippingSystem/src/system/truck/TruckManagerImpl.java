@@ -36,15 +36,29 @@ public class TruckManagerImpl implements TruckManager
     }
 
     @Override
-    public Route createRoute(int truckID) {
-        // TODO Auto-generated method stub
-        return null;
+    public String createRoute(int truckID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Truck t = dbs.getTruck(truckID);
+        String str = "";
+        if (t == null) {
+            return null;
+        }
+        str = t.createTruckRoute();
+        dbs.putTruck(t);
+        return str;
     }
 
     @Override
     public boolean refreshTruckRoute(int truckID) {
-        // TODO Auto-generated method stub
-        return false;
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Truck t = dbs.getTruck(truckID);
+        if (t == null) {
+            return false;
+        }
+        if (t.refreshTruckRoute() == false) {
+            return false;
+        }
+        return dbs.putTruck(t);
     }
 
     @Override
@@ -68,7 +82,6 @@ public class TruckManagerImpl implements TruckManager
             return false;
         }
         if (t.addPackage(packageID) == false) {
-            System.out.println("Package is already on truck.");
             return false;
         }
         return db.putTruck(t);
@@ -98,6 +111,7 @@ public class TruckManagerImpl implements TruckManager
     public boolean setTruckState(int truckID, TRUCK_STATE newState) {
         DatabaseSupport db = new DatabaseSupportImpl();
         Truck t = db.getTruck(truckID);
+
         if (t == null)
             return false;
 
