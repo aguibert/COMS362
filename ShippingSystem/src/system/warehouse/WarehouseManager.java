@@ -20,6 +20,8 @@ public interface WarehouseManager {
 
     boolean removeTruck(int truckID, int warehouseID);
 
+    /** Iteration 3 **/
+
     public Set<Warehouse> getAll();
 
     public boolean setLocation(int warehouseID, String newLocation);

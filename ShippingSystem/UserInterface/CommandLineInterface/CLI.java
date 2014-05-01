@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Set;
 
-import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.invoice.Invoice;
 import system.invoice.InvoiceController;
@@ -286,7 +285,7 @@ public class CLI
             return false;
         }
 
-        DatabaseSupportImpl db = new DatabaseSupportImpl();
+        system.DatabaseSupportImpl db = new system.DatabaseSupportImpl();
         if ("CREATE".equalsIgnoreCase(args[1])) {
             if (db.createTable())
                 System.out.println("Tables created successfully.");

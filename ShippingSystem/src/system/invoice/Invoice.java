@@ -40,4 +40,6 @@ public interface Invoice {
     public Set<Integer> getPackages();
 
     public boolean markDamaged();
+
+    /** Iteration 3 **/
 }

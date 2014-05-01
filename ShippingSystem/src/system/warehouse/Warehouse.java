@@ -24,5 +24,7 @@ public interface Warehouse {
 
     public boolean removeTruck(int truckID);
 
+    /** Iteration 3 **/
+
     public boolean setLocation(String newLocation);
 }

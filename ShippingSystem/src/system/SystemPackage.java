@@ -23,13 +23,15 @@ public interface SystemPackage {
 
     public int getInvoice();
 
+    /** Iteration 2 **/
+
     public boolean setLocation(String location);
 
     public String getLocation();
 
-    /** Iteration 2 **/
-
     public int getTruck();
 
     public boolean setTruck(int truckID);
+
+    /** Iteration 3 **/
 }
