@@ -121,6 +121,9 @@ public class CLI
             }
 
             String str = tc.createRoute(Integer.valueOf(args[2]));
+            if (str == null) {
+                return false;
+            }
             System.out.println("Truck " + args[2] + " has route " + str);
             return true;
         }
@@ -134,11 +137,11 @@ public class CLI
 
             if (tc.refreshTruckRoute(Integer.valueOf(args[2]))) {
                 System.out.println("Truck route refreshed for truck " + args[2]);
+                return true;
             }
             else {
-                System.out.println("Truck " + args[2] + " not found in database");
+                return false;
             }
-            return true;
         }
 
         //get packages on truck
@@ -150,8 +153,7 @@ public class CLI
 
             List<SystemPackage> packs = tc.getPackagesOnTruck(Integer.valueOf(args[2]));
             if (packs == null) {
-                System.out.println("Truck " + args[2] + " does not exist.");
-                return true;
+                return false;
             }
             System.out.println("Truck " + args[2] + " has " + packs.size() + " packages.");
 
@@ -183,11 +185,11 @@ public class CLI
 
             if (tc.removePackageFromTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package " + args[2] + " removed from truck " + args[3]);
+                return true;
             }
             else {
-                System.out.println("Package not found");
+                return false;
             }
-            return true;
         }
 
         //get trucks
@@ -197,8 +199,12 @@ public class CLI
                 return false;
             }
 
+            List<Truck> list = tc.getTrucks(args[2]);
+            if (list == null) {
+                return false;
+            }
             System.out.println("Trucks with state: " + args[2]);
-            for (Truck tr : tc.getTrucks(args[2])) {
+            for (Truck tr : list) {
                 System.out.println("  " + tr.getID());
             }
             return true;
@@ -213,12 +219,11 @@ public class CLI
 
             if (tc.setTruckState(Integer.valueOf(args[2]), args[3])) {
                 System.out.println("Truck " + args[2] + " set to state " + args[3]);
+                return true;
             }
             else {
-                System.out.println("Truck " + args[2] + " Error");
                 return false;
             }
-            return true;
         }
 
         //get truck

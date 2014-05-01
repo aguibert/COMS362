@@ -39,7 +39,11 @@ public class TruckManagerImpl implements TruckManager
     public String createRoute(int truckID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Truck t = dbs.getTruck(truckID);
-        String str = t.createTruckRoute();
+        String str = "";
+        if (t == null) {
+            return null;
+        }
+        str = t.createTruckRoute();
         dbs.putTruck(t);
         return str;
     }
@@ -48,9 +52,13 @@ public class TruckManagerImpl implements TruckManager
     public boolean refreshTruckRoute(int truckID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Truck t = dbs.getTruck(truckID);
-        boolean refreshed = t.refreshTruckRoute();
-        dbs.putTruck(t);
-        return refreshed;
+        if (t == null) {
+            return false;
+        }
+        if (t.refreshTruckRoute() == false) {
+            return false;
+        }
+        return dbs.putTruck(t);
     }
 
     @Override
@@ -74,7 +82,6 @@ public class TruckManagerImpl implements TruckManager
             return false;
         }
         if (t.addPackage(packageID) == false) {
-            System.out.println("Package not in the database.");
             return false;
         }
         return db.putTruck(t);
