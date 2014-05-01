@@ -3,6 +3,8 @@
  */
 package system.warehouse;
 
+import java.util.Set;
+
 import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
@@ -59,4 +61,8 @@ public class WarehouseManagerImpl implements WarehouseManager
         return new DatabaseSupportImpl().getWareHouse(warehouseID);
     }
 
+    @Override
+    public Set<Warehouse> getAll() {
+        return new DatabaseSupportImpl().getAllWarehouse();
+    }
 }

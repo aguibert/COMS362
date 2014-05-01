@@ -571,4 +571,31 @@ public class DatabaseSupportImpl implements DatabaseSupport
 
         return packs;
     }
+
+    @Override
+    public Set<Warehouse> getAllWarehouse() {
+        Set<Warehouse> toReturn = new HashSet<>();
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("select javaObject from " + WAREHOUSE_TABLE);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(rs.getBytes("javaObject"));
+                ObjectInputStream ois = new ObjectInputStream(bis);
+
+                Warehouse w = (Warehouse) ois.readObject();
+                if (w == null)
+                    continue;
+                toReturn.add(this.getWareHouse(w.getID()));
+
+                ois.close();
+                bis.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return toReturn;
+    }
 }

@@ -290,7 +290,8 @@ public class CLI
                                + "CREATE        <warehouseID>\n "
                                + "GET           <warehouseID>\n "
                                + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
-                               + "DEPARTURE     <warehouseID> <packageID>");
+                               + "DEPARTURE     <warehouseID> <packageID>\n "
+                               + "GETALL");
             return true;
         }
 
@@ -347,7 +348,23 @@ public class CLI
                 System.out.println("Unable to depart package " + Integer.valueOf(args[3] + " from warehouse " + Integer.valueOf(args[2])));
             }
         }
-        return true;
+
+        // Get all warehouses
+        if ("getAll".equalsIgnoreCase(args[1])) {
+            if (len != 2) {
+                System.out.println("WAREHOUSE GETALL");
+                return false;
+            }
+
+            Set<Warehouse> whs = wc.getAll();
+            for (Warehouse wh : whs)
+                System.out.println(wh);
+            System.out.println("System returned " + whs.size() + " warehouse(s).");
+            return true;
+        }
+
+        System.out.println("Unrecognized command.");
+        return false;
     }
 
     private static boolean doInvoice(String[] args) {
@@ -518,7 +535,7 @@ public class CLI
             Set<SystemPackage> packs = ic.getAllPackages();
             for (SystemPackage sp : packs)
                 System.out.println(sp.toString());
-            System.out.println("System returned " + packs.size() + " packages.");
+            System.out.println("System returned " + packs.size() + " package(s).");
             return true;
         }
 

@@ -57,4 +57,6 @@ public interface DatabaseSupport
     public Set<Invoice> getInvoiceByState(INVOICE_STATE state);
 
     public Set<SystemPackage> getAllPackages();
+
+    public Set<Warehouse> getAllWarehouse();
 }

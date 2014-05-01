@@ -3,6 +3,8 @@
  */
 package system.warehouse;
 
+import java.util.Set;
+
 import system.SystemPackage;
 
 /**
@@ -30,5 +32,10 @@ public class WarehouseControllerImpl implements WarehouseController
     @Override
     public Warehouse getWarehouse(int warehouseID) {
         return wm.getWarehouse(warehouseID);
+    }
+
+    @Override
+    public Set<Warehouse> getAll() {
+        return wm.getAll();
     }
 }
