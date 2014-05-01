@@ -136,7 +136,7 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        if (wm.addTruck(truckID, warehouseID) == null) {
+        if (wm.addTruck(truckID, warehouseID) == false) {
             return false;
         }
         t.setState(TRUCK_STATE.AVAILABLE);
@@ -151,7 +151,7 @@ public class TruckManagerImpl implements TruckManager
         if (t == null) {
             return false;
         }
-        if (wm.removeTruck(truckID, warehouseID) == null) {
+        if (wm.removeTruck(truckID, warehouseID) == false) {
             return false;
         }
         t.setState(TRUCK_STATE.IN_ROUTE);
