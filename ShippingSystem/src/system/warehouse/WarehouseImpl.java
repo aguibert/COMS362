@@ -75,11 +75,7 @@ public class WarehouseImpl implements Warehouse, Serializable
 
     @Override
     public boolean removeTruck(int truckID) {
-        if (!trucks.contains(truckID)) {
-            return false;
-        }
-        else
-            return true;
+        return trucks.remove(truckID);
     }
 
     @Override

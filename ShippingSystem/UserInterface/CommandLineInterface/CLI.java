@@ -298,6 +298,7 @@ public class CLI
                 if (wc.packageArrival(1, 1, "cust", "dest", 1.0, 1.0) == null)
                     return false;
             }
+            return true;
         }
         else if ("DROP".equalsIgnoreCase(args[1])) {
             if (db.dropTable())
@@ -316,7 +317,7 @@ public class CLI
             System.out.println("Warehouse operations:\n "
                                + "ARRIVAL       <warehouseID> <invoiceID> <customerName> <destinationAddress> <weight> <shippingCost>\n "
                                + "CREATE        <warehouseID>\n "
-                               + "DEPARTURE     <warehouseID> <packageID>\n "
+                               + "DEPARTURE     <warehouseID> <packageID> <truckID>\n "
                                + "GET           <warehouseID>\n "
                                + "GETALL\n "
                                + "SETLOC        <warehouseID> <location>");
@@ -364,17 +365,18 @@ public class CLI
 
         //packageDeparture
         if ("departure".equalsIgnoreCase(args[1])) {
-            if (len != 4) {
-                System.out.println("WAREHOUSE DEPARTURE <warehouseID> <packageID>");
+            if (len != 5) {
+                System.out.println("WAREHOUSE DEPARTURE <warehouseID> <packageID> <truckID>");
                 return false;
             }
 
-            if (wc.packageDeparture(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+            if (wc.packageDeparture(Integer.valueOf(args[2]), Integer.valueOf(args[3]), Integer.valueOf(args[4]))) {
                 System.out.println("pacakge " + Integer.valueOf(args[3]) + " removed from warehouse " + Integer.valueOf(args[2]));
             }
             else {
                 System.out.println("Unable to depart package " + Integer.valueOf(args[3] + " from warehouse " + Integer.valueOf(args[2])));
             }
+            return true;
         }
 
         // Get all warehouses

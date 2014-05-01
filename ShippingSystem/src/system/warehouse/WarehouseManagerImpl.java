@@ -10,6 +10,7 @@ import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.invoice.InvoiceManager;
 import system.invoice.InvoiceManagerImpl;
+import system.truck.TruckManagerImpl;
 
 /**
  * @author Jon
@@ -55,9 +56,19 @@ public class WarehouseManagerImpl implements WarehouseManager
     }
 
     @Override
-    public boolean packageDeparture(int warehouseID, int packageID) {
-        Warehouse w = new DatabaseSupportImpl().getWareHouse(warehouseID);
-        return w.packageDeparture(packageID);
+    public boolean packageDeparture(int warehouseID, int packageID, int truckID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Warehouse w = dbs.getWareHouse(warehouseID);
+        if (w == null)
+            return false;
+
+        if (TruckManagerImpl.getInstance().addPackageToTruck(packageID, truckID) == false)
+            return false;
+
+        if (w.packageDeparture(packageID) == false)
+            return false;
+
+        return dbs.putWareHouse(w);
     }
 
     @Override
@@ -85,9 +96,7 @@ public class WarehouseManagerImpl implements WarehouseManager
         if (w == null)
             return false;
 
-        if (!w.removeTruck(truckID)) {
-            return false;
-        }
+        w.removeTruck(truckID);
 
         return dbs.putWareHouse(w);
     }

@@ -25,8 +25,8 @@ public class WarehouseControllerImpl implements WarehouseController
     }
 
     @Override
-    public boolean packageDeparture(int warehouseID, int packageID) {
-        return wm.packageDeparture(warehouseID, packageID);
+    public boolean packageDeparture(int warehouseID, int packageID, int truckID) {
+        return wm.packageDeparture(warehouseID, packageID, truckID);
     }
 
     @Override

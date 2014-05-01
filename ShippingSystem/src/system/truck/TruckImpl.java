@@ -74,7 +74,7 @@ public class TruckImpl implements Truck, Serializable {
             return toReturn;
         } else {
             toReturn = route.substring(0, route.indexOf(' '));
-            route = route.substring(route.indexOf(' '), route.length());
+            route = route.substring(route.indexOf(' ') + 1, route.length());
             return toReturn;
         }
     }
@@ -143,6 +143,7 @@ public class TruckImpl implements Truck, Serializable {
     public String toString() {
         String string = "Truck " + ID + ":\n" + " Location: " + location + "\n" + " Packages: " + packages.toString();
         string = string.concat("\n" + " State: " + state);
+        string += "\n Route: " + route;
         return string;
     }
 }

@@ -10,7 +10,7 @@ public interface WarehouseManager {
 
     public SystemPackage packageArrival(int warehouseID, int invoiceID, String customerName, String destinationAddress, double weight, double shippingCost);
 
-    public boolean packageDeparture(int warehouseID, int packageID);
+    public boolean packageDeparture(int warehouseID, int packageID, int truckID);
 
     public Warehouse getWarehouse(int warehouseID);
 
