@@ -253,6 +253,7 @@ public class CLI
         int len = args.length;
         if (len < 2 || "help".equalsIgnoreCase(args[1])) {
             System.out.println("Database operations:\n CREATE\n DROP");
+            return false;
         }
 
         DatabaseSupportImpl db = new DatabaseSupportImpl();
@@ -359,10 +360,11 @@ public class CLI
                                + "GETCUSTOMER   <customerName>\n "
                                + "ADDPACKAGE    <invoiceID> <packageID>\n "
                                + "GET           <invoiceID>\n "
-                               + "GETPACKAGE    <packageID>\n "
+                               + "GETPKG        <packageID>\n "
                                + "QUERYSTATE    <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>\n "
-                               + "DELIVER       <packageID> <truckID>\n"
-                               + "MARKDAMAGED   <packageID> <invoiceID>");
+                               + "DELIVER       <packageID> <truckID>\n "
+                               + "MARKDAMAGED   <packageID> <invoiceID>\n "
+                               + "GETPKGLOC     <packageID> <invoiceID>");
             return true;
         }
 
@@ -436,9 +438,9 @@ public class CLI
         }
 
         // getPackage
-        if ("getPackage".equalsIgnoreCase(args[1])) {
+        if ("getPkg".equalsIgnoreCase(args[1])) {
             if (len != 3) {
-                System.out.println("INVOICE GETPACKAGE <packageID>");
+                System.out.println("INVOICE GETPKG <packageID>");
                 return false;
             }
 
@@ -450,6 +452,7 @@ public class CLI
             return true;
         }
 
+        // Get package by state
         if ("queryState".equalsIgnoreCase(args[1])) {
             if (len != 3) {
                 System.out.println("INVOICE QUERYSTATE <OPEN|COMPLETE|IN_PROGRESS|CANCELLED>");
@@ -467,6 +470,7 @@ public class CLI
             return true;
         }
 
+        // Deliver package (and mark closed if necessary)
         if ("deliver".equalsIgnoreCase(args[1])) {
             if (len != 4) {
                 System.out.println("DELIVER       <packageID> <truckID>");
@@ -476,6 +480,7 @@ public class CLI
             return ic.deliverPackage(Integer.valueOf(args[2]), Integer.valueOf(args[3]));
         }
 
+        // Mark a package damaged (invoice re-opened if previously completed)
         if ("markDamaged".equalsIgnoreCase(args[1])) {
             if (len != 4) {
                 System.out.println("MARKDAMAGED   <packageID> <invoiceID>");
@@ -484,6 +489,20 @@ public class CLI
 
             if (ic.markDamaged(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
                 System.out.println("Package has been marked damaged.");
+                return true;
+            }
+            return false;
+        }
+
+        // Query package by location
+        if ("getPkgLoc".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("GETPKGLOC     <packageID> <invoiceID>");
+                return false;
+            }
+            String loc = ic.getPkgLoc(Integer.valueOf(args[2]), Integer.valueOf(args[3]));
+            if (loc != null) {
+                System.out.println("Package has location: " + loc);
                 return true;
             }
             return false;

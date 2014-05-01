@@ -69,4 +69,9 @@ public class InvoiceControllerImpl implements InvoiceController
     public boolean markDamaged(int packageID, int invoiceID) {
         return im.markDamaged(packageID, invoiceID);
     }
+
+    @Override
+    public String getPkgLoc(int packageID, int invoiceID) {
+        return im.getPkgLoc(packageID, invoiceID);
+    }
 }

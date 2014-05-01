@@ -32,6 +32,7 @@ public class SystemPackageImpl implements SystemPackage, Serializable {
         this.shippingCost = shippingCost;
         this.state = state;
         this.truckID = -1;
+        setLocation("at the warehouse");
     }
 
     @Override
