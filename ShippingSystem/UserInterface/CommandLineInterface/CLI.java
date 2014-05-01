@@ -97,6 +97,8 @@ public class CLI
                                + "REMOVEPACKAGE          <packageID> <truckID>\n"
                                + "GETTRUCKS              <state>\n"
                                + "SETSTATE               <truckID> <newState>\n"
+                               + "toWarehouse            <TruckID> <wareHouse>\n"
+                               + "releaseTruck           <TruckID> <warehouseID>\n"
                                + "GET                    <truckID>\n");
             return true;
         }
@@ -219,6 +221,38 @@ public class CLI
 
             if (tc.setTruckState(Integer.valueOf(args[2]), args[3])) {
                 System.out.println("Truck " + args[2] + " set to state " + args[3]);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        //return truck to warehouse
+        if ("toWarehouse".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("TRUCK TOWAREHOUSE <truckID> <warehouseID>");
+                return false;
+            }
+
+            if (tc.returnTruckToWarehouse(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Truck " + args[2] + " returned to Warehouse " + args[3]);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        //release truck from warehouse
+        if ("releaseTruck".equalsIgnoreCase(args[1])) {
+            if (len != 4) {
+                System.out.println("TRUCK TOWAREHOUSE <truckID> <warehouseID>");
+                return false;
+            }
+
+            if (tc.releaseTruck(Integer.valueOf(args[2]), Integer.valueOf(args[3]))) {
+                System.out.println("Truck " + args[2] + " released from Warehouse " + args[3]);
                 return true;
             }
             else {

@@ -10,6 +10,8 @@ import system.DatabaseSupport;
 import system.DatabaseSupportImpl;
 import system.SystemPackage;
 import system.truck.Truck.TRUCK_STATE;
+import system.warehouse.WarehouseManager;
+import system.warehouse.WarehouseManagerImpl;
 
 /**
  * @author Lucas
@@ -124,5 +126,35 @@ public class TruckManagerImpl implements TruckManager
     @Override
     public Truck getTruck(int truckID) {
         return new DatabaseSupportImpl().getTruck(truckID);
+    }
+
+    @Override
+    public boolean returnTruckToWarehouse(int truckID, int warehouseID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Truck t = dbs.getTruck(truckID);
+        WarehouseManager wm = WarehouseManagerImpl.getInstance();
+        if (t == null) {
+            return false;
+        }
+        if (wm.addTruck(truckID, warehouseID) == null) {
+            return false;
+        }
+        t.setState(TRUCK_STATE.AVAILABLE);
+        return dbs.putTruck(t);
+    }
+
+    @Override
+    public boolean releaseTruck(int truckID, int warehouseID) {
+        DatabaseSupport dbs = new DatabaseSupportImpl();
+        Truck t = dbs.getTruck(truckID);
+        WarehouseManager wm = WarehouseManagerImpl.getInstance();
+        if (t == null) {
+            return false;
+        }
+        if (wm.removeTruck(truckID, warehouseID) == null) {
+            return false;
+        }
+        t.setState(TRUCK_STATE.IN_ROUTE);
+        return dbs.putTruck(t);
     }
 }
