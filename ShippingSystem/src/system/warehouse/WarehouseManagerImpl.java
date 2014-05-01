@@ -65,24 +65,27 @@ public class WarehouseManagerImpl implements WarehouseManager
     public boolean addTruck(int truckID, int warehouseID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Warehouse w = dbs.getWareHouse(warehouseID);
-        w.addTruck(truckID);
-        if (dbs.putWareHouse(w) == false) {
+        if (w == null)
             return false;
-        }
-        return true;
+
+        w.addTruck(truckID);
+
+        return dbs.putWareHouse(w);
     }
 
     @Override
     public boolean removeTruck(int truckID, int warehouseID) {
         DatabaseSupport dbs = new DatabaseSupportImpl();
         Warehouse w = dbs.getWareHouse(warehouseID);
+
+        if (w == null)
+            return false;
+
         if (!w.removeTruck(truckID)) {
             return false;
         }
-        if (dbs.putWareHouse(w) == false) {
-            return false;
-        }
-        return true;
+
+        return dbs.putWareHouse(w);
     }
 
     @Override
