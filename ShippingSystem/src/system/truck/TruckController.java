@@ -25,4 +25,8 @@ public interface TruckController {
     public Truck getTruck(int truckID);
 
     /** Iteration 2 **/
+
+    public boolean returnTruckToWarehouse(int truckID, int warehouseID);
+
+    public boolean releaseTruck(int truckID, int warehouseID);
 }

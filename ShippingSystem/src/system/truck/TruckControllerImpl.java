@@ -79,4 +79,14 @@ public class TruckControllerImpl implements TruckController
     public Truck getTruck(int truckID) {
         return tm.getTruck(truckID);
     }
+
+    @Override
+    public boolean returnTruckToWarehouse(int truckID, int warehouseID) {
+        return tm.returnTruckToWarehouse(truckID, warehouseID);
+    }
+
+    @Override
+    public boolean releaseTruck(int truckID, int warehouseID) {
+        return tm.releaseTruck(truckID, warehouseID);
+    }
 }
